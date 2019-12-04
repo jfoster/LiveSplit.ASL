@@ -30,11 +30,13 @@ startup {
 	vars.splits = new List<string>(); // keeps track of splitted splits
 	vars.tick = 0; // keeps track of ticks since script init
 
-	vars.offsets = new Dictionary<string, int> { { "1.1.3.0", -0xC020 },
+	vars.offsets = new Dictionary<string, int> {
+		{ "1.1.3.0", -0xC020 },
 		{ "1.1.2.0", 0x0 },
 	};
 
-	vars.addresses = new Dictionary<string, int> { { "fSeagulls", 0xDA553C },
+	vars.addresses = new Dictionary<string, int> {
+		{ "fSeagulls", 0xDA553C },
 		{ "fGangWars", 0xDA55C4 },
 		{ "iMissionsPassed", 0xDA58B0 },
 		{ "iMissionsFailed", 0xDA58B4 },
@@ -55,7 +57,7 @@ startup {
 }
 
 init {
-	vars.enabled = true;
+	vars.enabled = false;
 	vars.doResetStart = false;
 	vars.queueSplit = false;
 
@@ -75,23 +77,19 @@ init {
 	version = string.Join(".", fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart, fvi.FilePrivatePart);
 	int voffset = 0x0;
 	bool v = vars.offsets.TryGetValue(version, out voffset);
-	if (!v) {
-		vars.print("Unsupported EFLC.exe version");
-		vars.enabled = false;
-		return;
-	}
-	vars.voffset = voffset;
+	vars.print("EFLC.exe " + version);
 
 	// Get xlive.dll ModuleMemorySize
 	int mms = modules.Where(m => m.ModuleName == "xlive.dll").First().ModuleMemorySize;
-	vars.print("xlive.dll ModuleMemorySize: " + mms.ToString());
 	bool listenerxliveless = mms > 50000 && mms < 200000;
-	if (!listenerxliveless) {
-		// only listener's xliveless is supported
-		vars.print("Unsupported xlive.dll");
-		vars.enabled = false;
-		return;
+	vars.print("xlive.dll ModuleMemorySize: " + mms.ToString());
+
+	if (v && listenerxliveless) {
+		vars.enabled = true;
 	}
+
+	// Set offset for specific game version
+	vars.voffset = voffset;
 
 	// Create new empty MemoryWatcherList
 	vars.memoryWatchers = new MemoryWatcherList();
@@ -114,19 +112,30 @@ init {
 }
 
 update {
+	// disable timer control actions if not enabled
+	if (!vars.enabled) return;
+
 	// Prevent actions happening until atleast 2 ticks have occured since script startup
 	if (vars.tick < 2) {
 		vars.tick++;
 		return;
 	}
 
-	// disable timer control actions if not enabled
-	if (!vars.enabled) return;
-
-	// if doResetStart was set to true on previous update, reset it to false
-	if (vars.doResetStart) vars.doResetStart = false;
-
+	vars.doResetStart = false;
 	vars.memoryWatchers.UpdateAll(game);
+
+	// Splitting logic
+	foreach (var a in vars.addresses) {
+		if (settings.ContainsKey(a.Key) && settings[a.Key]) {
+			var val = vars.memoryWatchers[a.Key];
+			if (val.Current > val.Old && !vars.splits.Contains(a.Key + val.Current)) {
+				vars.splits.Add(a.Key + val.Current);
+				vars.queueSplit = true;
+
+				vars.print(string.Format("Split reason: {0} - ({1} > {2})", a.Key, val.Current, val.Old));
+			}
+		}
+	}
 
 	// Triggers when "Clean And Serene..." is visible on-screen.
 	if (old.isFirstMission != 30000 && current.isFirstMission == 30000 && current.isLoading == 0 && vars.memoryWatchers["iMissionsAttempted"].Current == 0) {
@@ -146,32 +155,29 @@ update {
 }
 
 split {
-	// do not split unless 2 ticks have passed since initialization
-	if (vars.tick < 2) return false;
-
 	// disable splitting if not enabled
 	if (!vars.enabled) return false;
 
-	foreach (var a in vars.addresses) {
-		if (settings.ContainsKey(a.Key) && settings[a.Key]) {
-			var val = vars.memoryWatchers[a.Key];
-			if (val.Current > val.Old && !vars.splits.Contains(a.Key + val.Current)) {
-				vars.splits.Add(a.Key + val.Current);
-				vars.print(string.Format("Split reason: {0} - ({1} > {2})", a.Key, val.Current, val.Old));
-				vars.queueSplit = true;
+	// do not split unless 2 ticks have passed since initialization
+	if (vars.tick < 2) return false;
+
+	bool doSplit = false;
+
+	if (vars.queueSplit) {
+		if (settings["splitOnStart"]) {
+			if (current.missionID != old.missionID) {
+				doSplit = true;
 			}
+		} else {
+			doSplit = true;
 		}
 	}
 
-	if (settings["splitOnStart"]) {
-		if (current.missionID != old.missionID && vars.queueSplit) {
-			vars.queueSplit = false;
-			return true;
-		}
-		return false;
+	if (doSplit) {
+		vars.queueSplit = false;
 	}
 
-	return vars.queueSplit;
+	return doSplit;
 }
 
 reset {
