@@ -14,30 +14,35 @@
 state ("GTAIV", "1.2.0.32") {
 	uint isLoading : 0xDD5F60;   
 	uint whiteLoadingScreen : 0x017B3840;
+	string10 scriptName : 0x0174AF74, 0x58, 0x70; // used for Ransom splitting
 }
 
 // Patch 8
 state ("GTAIV", "1.0.8.0") {
 	uint isLoading : 0xDF800C;
 	uint whiteLoadingScreen : 0x014CB06C;
+	string10 scriptName : 0x0150FDB8, 0x58, 0x70;
 }
 
 // Patch 7
 state ("GTAIV", "1.0.7.0") {
 	uint isLoading : 0xCF9AD4;
 	uint whiteLoadingScreen : 0x014A8238;
+	string10 scriptName : 0x1583310, 0x58, 0x70;
 }
 
 // Patch 6
 state ("GTAIV", "1.0.6.0") {
 	uint isLoading : 0xCF8AC4;
 	uint whiteLoadingScreen : 0x014A7248;
+	string10 scriptName : 0x01582320, 0x58, 0x70;
 }
 
 // Patch 4
 state ("GTAIV", "1.0.4.0") {
 	uint isLoading : 0xC07A0C;
 	uint whiteLoadingScreen : 0x01223EA8;
+	string10 scriptName : 0x013A02B8, 0x58, 0x70; 
 }
 
 startup {
@@ -79,6 +84,7 @@ startup {
 	addSetting("iStuntJumps", false, "Stunt Jumps", null, "Split upon completion of any unique stunt jump");
 	addSetting("iMostWanted", false, "Most Wanted", null, "Split upon killing a most wanted person(s)");
 	addSetting("iPigeons", false, "Pigeons", null, "Split upon extermination of a flying rat");
+	addSetting("ransomSplit", false, "(Experimental) Split on Ransom completion", null, "Splits on Ransom completion.");
 	addSetting("debug", false, "Debug", null, "Print debug messages to the windows error console");
 }
 
@@ -269,6 +275,12 @@ split {
 				vars.print(string.Format("Split reason: {0} - ({1} > {2})", a.Key, val.Current, val.Old));
 				return true;
 			}
+		}
+	}
+	if (settings["ransomSplit"] && vars.correctEpisode)
+	{		
+		if (current.scriptName != "gerry3c" && old.scriptName == "gerry3c") {
+			return true;
 		}
 	}
 	return false;
