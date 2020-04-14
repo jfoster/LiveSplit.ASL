@@ -1,7 +1,7 @@
 /*
  * GTA IV LiveSplit Autosplitter
  * Originally created by possessedwarrior, adapted by Rave, updated to work with the Complete Edition by hoxi.
- * https://gist.github.com/jfoster/37f266491e3caacc807d8be9d144e38b
+ * https://github.com/jfoster/LiveSplit.ASL/tree/dev/GTAIV
  */
 
 // GTAIV.exe
