@@ -4,15 +4,13 @@
  * https://github.com/jfoster/LiveSplit.ASL/tree/dev/GTAIV
  */
 
-// GTAIV.exe
-
 // isLoading before 1.2.0.32: 0 if loading, 4 in normal gameplay, sometimes seemingly random values in fade ins/outs
 // isLoading in 1.2.0.32: 0 if loading, random values if not loading
 // whiteLoadingScreen: a number that isn't 0 while white screen is showing (65536), 0 on black screen
 
 // Complete Editon
 state ("GTAIV", "1.2.0.32") {
-	uint isLoading : 0xDD5F60;   
+	uint isLoading : 0xD74824;
 	uint whiteLoadingScreen : 0x017B3840;
 	string10 scriptName : 0x0174AF74, 0x58, 0x70; // used for Ransom splitting
 }
@@ -46,24 +44,17 @@ state ("GTAIV", "1.0.4.0") {
 }
 
 startup {
-	refreshRate = 60;
-
-	vars.prevPhase = null; // keeps track of previous timer phase
-	vars.splits = new List<string>(); // keeps track of splitted splits
-	vars.tick = 0; // keeps track of ticks since script init
-
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
 		{"1.2.0.32", -0x30CA28},  
 		{"1.0.8.0", -0x398940},
 		{"1.0.7.0", 0x0},
-		{"1.0.6.1", 0x0},
 		{"1.0.5.2", -0x1020},
 		{"1.0.6.0", -0xFE0},
 		{"1.0.4.0", -0x563040},
 	};
 
-	vars.addresses = new Dictionary<string, int> {
+	vars.stats = new Dictionary<string, int> {
 		{"iMissionsPassed", 0x011C4460},
 		{"iMissionsFailed", 0x011C4464},
 		{"iMissionsAttempted", 0x011C4468},
@@ -75,175 +66,170 @@ startup {
 		{"iPigeons", 0x011C4610},
 	};
 
-	Action<string, bool, string, string, string> addSetting = (id, defaultVal, label, parent, tooltip) => {
+	refreshRate = 60;
+
+	vars.prevPhase = null; // keeps track of previous timer phase
+	vars.splits = new HashSet<string>(); // keeps track of splitted splits
+
+	Action<string, string, string, string, bool> addSetting = (parent, id, label, tooltip, defaultVal) => {
 		settings.Add(id, defaultVal, label, parent);
 		settings.SetToolTip(id, tooltip);
 	};
 
-	addSetting("iMissionsPassed", true, "Story Missions (Any%)", null, "Split upon completion of a main story mission");
-	addSetting("iStuntJumps", false, "Stunt Jumps", null, "Split upon completion of any unique stunt jump");
-	addSetting("iMostWanted", false, "Most Wanted", null, "Split upon killing a most wanted person(s)");
-	addSetting("iPigeons", false, "Pigeons", null, "Split upon extermination of a flying rat");
-	addSetting("ransomSplit", false, "(Experimental) Split on Ransom completion", null, "Splits on Ransom completion.");
-	addSetting("debug", false, "Debug", null, "Print debug messages to the windows error console");
+	addSetting(null, "iMissionsPassed", "Story Missions (Any%)", "Split upon completion of a main story mission", true);
+	addSetting("iMissionsPassed", "ransomSplit", "Split on Ransom Completion (Experimental)", "Splits on Ransom completion.", false);
+	addSetting("iMissionsPassed", "splitOnStart", "Split on Mission Start (Experimental)", "Delay splitting until next mission start", false);
+
+	addSetting(null, "iStuntJumps", "Stunt Jumps", "Split upon completion of any unique stunt jump", false);
+	addSetting(null, "iMostWanted", "Most Wanted", "Split upon killing a most wanted person(s)", false);
+	addSetting(null, "iPigeons", "Pigeons", "Split upon extermination of a flying rat", false);
+
+	addSetting(null, "debug", "Debug", "Print debug messages to the windows error console", false);
 }
 
 init {
 	vars.enabled = false;
-	vars.check1 = false;
-	vars.check2 = false;
-	vars.doResetAndStart = false;
+	vars.doResetStart = false;
+	vars.queueSplit = false;
 	vars.correctEpisode = false;
 
 	// Create new empty MemoryWatcherList
 	vars.memoryWatchers = new MemoryWatcherList();
 
-
 	// print() wrapper 
 	Action<object> DbgInfo = (obj) => {
 		if (settings["debug"]) {
-			print("[LiveSplit.GTATLAD.asl] " + obj.ToString());
+			print("[LiveSplit.GTAIV.asl] " + obj.ToString());
 		}
 	};
-	vars.print = DbgInfo;
+	vars.debugInfo = DbgInfo;
 
-	// Return true if secs is less than timer has been running [currently unused]
-	Func<double, bool> timerSecs = (secs) => {
-		double ts = timer.CurrentTime.RealTime.GetValueOrDefault().TotalSeconds;
-		return ts == 0 || ts > secs;
-	};
-	vars.timerSecs = timerSecs;
-
-	// Get GTAIV.exe version
-	var fvi = modules.First().FileVersionInfo;
+	// Get exe version
+	var fvi = modules.First().FileVersionInfo; // Don't use FileVersionInfo.FileVersion as it produces string with commas and spaces.
 	version = string.Join(".", fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart, fvi.FilePrivatePart);
-	vars.print("GTAIV.exe " + version);
 
+	vars.version = new Version(version);
+	vars.debugInfo("GTAIV.exe " + version);
+
+	vars.isCE = vars.version.Major == 1 && vars.version.Minor >= 2; // GTAIV 1.2.x.x
+
+	int voffset = 0x0;
+	bool versionCheck = vars.offsets.TryGetValue(version, out voffset); // true if version exists within version dictionary
+	vars.voffset = voffset;
+
+	bool xlivelessCheck;
 
 	// Get xlive.dll ModuleMemorySize - not needed for CE
-	if (version == "1.2.0.32")
+	if (vars.isCE) // GTAIV 1.2.x.x
 	{
 		vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD7040)){ Name = "EpisodeID"}); // 0 for IV, 1 for TLAD, 2 for TBOGT
-		if (!String.IsNullOrEmpty(version)) {
-			vars.enabled = true;
-		}
+		xlivelessCheck = true;
 	}
-	else 
+	else
 	{
+		// Get xlive.dll ModuleMemorySize
 		int mms = modules.Where(m => m.ModuleName == "xlive.dll").First().ModuleMemorySize;
-		vars.print("xlive.dll ModuleMemorySize: " + mms.ToString());
-		bool listenerxliveless = mms > 50000 && mms < 200000;
+		vars.debugInfo("xlive.dll ModuleMemorySize: " + mms.ToString());
 
-		if (!String.IsNullOrEmpty(version) && listenerxliveless) {
-			vars.enabled = true;
+		// listener's xliveless should be within this range
+		xlivelessCheck = mms > 50000 && mms < 200000;
+	}
+
+	if (xlivelessCheck && versionCheck) {
+		vars.enabled = true;
+	}
+
+	// MemoryWatcher wrapper
+	Action<string, int, int, int> mw = (name, address, aoffset, poffset) => {
+		var dp = new DeepPointer(address+aoffset);
+
+		if (poffset != 0x0) {
+			dp = new DeepPointer(address+aoffset, poffset);
 		}
-	}
 
-	// Set offset for specific game version
-	vars.voffset = 0x0;
-	bool first = true;
-	foreach (var v in vars.offsets) {
-		if (first || v.Key == version) {
-			first = false;
-			vars.voffset = v.Value;
+		var type = name.Substring(0,1);
+		if (type == "f") {
+			vars.memoryWatchers.Add(new MemoryWatcher<float>(dp) { Name = name });
+		} else if (type == "i") {
+			vars.memoryWatchers.Add(new MemoryWatcher<int>(dp){ Name = name });
 		}
-	}
+	};
 
-
-	if (version == "1.2.0.32") {
-		// MemoryWatcher wrapper
-		Action<string, int, int> mw = (name, address, aoffset) => {
-			//var dp = new DeepPointer(address+aoffset);
-			var type = name.Substring(0,1);
-			//print("creating complete edition memory watcher" + name); 
-			if (type == "f") {
-				vars.memoryWatchers.Add(new MemoryWatcher<float>(new DeepPointer("GTAIV.exe", address+aoffset)) { Name = name });
-			} else if (type == "i") {
-				vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", address+aoffset)){ Name = name }); 
-			}
-		};
-
-		// Add memory watcher for each address
-		foreach (var a in vars.addresses) {
-			mw(a.Key, a.Value, vars.voffset);  
-		};
-	}
-	else {
-		// MemoryWatcher wrapper
-		Action<string, int, int, int> mw = (name, address, aoffset, poffset) => {
-			var dp = new DeepPointer(address+aoffset, poffset);
-			var type = name.Substring(0,1);
-			if (type == "f") {
-				vars.memoryWatchers.Add(new MemoryWatcher<float>(dp) { Name = name });
-			} else if (type == "i") {
-				vars.memoryWatchers.Add(new MemoryWatcher<int>(dp){ Name = name });
-			}
-		};
-
-		// Add memory watcher for each address
-		foreach (var a in vars.addresses) {
+	// Add memory watcher for each address
+	foreach (var a in vars.stats) {
+		if (vars.isCE) {
+			mw(a.Key, a.Value, vars.voffset, 0x0);
+		} else {
 			mw(a.Key, a.Value, vars.voffset, 0x10);
-		}; 
-	} 
-
-
-
-
-
+		}
+	}
 }
 
 update {
-	if (version == "1.2.0.32")
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return;
+
+	if (vars.isCE)
 	{		
 		if (vars.memoryWatchers["EpisodeID"].Current == 0) 
 		{
 			vars.correctEpisode = true;
-			//print("Current game: IV"); 
 		}
 		else {
-			vars.correctEpisode = false; 
+			vars.correctEpisode = false;
+			return;
 		}	
 	}
 	else {
 		vars.correctEpisode = true;
 	}
 
-
-	// Disable timer control actions if not enabled
-	if (!vars.enabled) return;
-
-	// Prevent actions happening until atleast 2 ticks have occured since script init
-	if (vars.tick < 2) {
-		vars.tick++;
-		return;
-	}
-
 	// Update all MemoryWatchers
 	vars.memoryWatchers.UpdateAll(game);
 
-	// if doResetAndStart was set to true on previous update, reset it to false
-	if (vars.doResetAndStart) vars.doResetAndStart = false;
+	// loop through memory watchers and if it matches an enabled setting then check if it's increased
+	foreach (var mw in vars.memoryWatchers) {
+		var key = mw.Name;
+		
+		if (settings.ContainsKey(key) && settings[key]) {
+			if (!vars.splits.Contains(key+mw.Current) && mw.Current == mw.Old + 1) {
+				vars.splits.Add(key+mw.Current);
+				vars.queueSplit = true;
+
+				vars.debugInfo(string.Format("Split queued: {0} - current: {1} old: {2}", key, mw.Current, mw.Old));
+			}
+		}
+	}
+
+	if (settings["ransomSplit"])
+	{		
+		if (current.scriptName != "gerry3c" && old.scriptName == "gerry3c") {
+			vars.queueSplit = true;
+		}
+	}
+
+	// if doResetStart was set to true on previous update, reset it to false
+	vars.doResetStart = false;
 
 	// Detect when the loading screen transitions from white to black.
 	// Ideally this should trigger on the first frame of black, sometimes it triggers late.
-	bool check1 = current.whiteLoadingScreen == 0 && old.whiteLoadingScreen != 0; 
+	bool startCheck = current.whiteLoadingScreen == 0 && old.whiteLoadingScreen != 0 && current.isLoading == 0;
 
-	vars.check1 = check1; 
+	// Check if the timer is not running or has been running for more than 1 seconds.
+	double ts = timer.CurrentTime.RealTime.GetValueOrDefault().TotalSeconds;
+	bool timerCheck = timer.CurrentPhase == TimerPhase.NotRunning || ts >= 1.0;
 
-	if (vars.check1 || vars.check2) {
-		vars.print(string.Format("check1: {0} - check2: {1}", vars.check1, vars.check2));
+	// check if missions attempted is set to 0.
+	bool missionCheck = vars.memoryWatchers["iMissionsAttempted"].Current == 0;
+
+	if (startCheck && timerCheck && missionCheck && vars.correctEpisode) {
+		vars.doResetStart = true;
+		vars.splits.Clear();
 	}
 
- 	// If whiteLoadingScreen have evaluated to true (checking for loading isn't really needed is it? - hoxi)
-	if (vars.check1) {
-		// reset/start if missionsAttempted is 0
-		if (vars.memoryWatchers["iMissionsAttempted"].Current == 0 && vars.correctEpisode) {
-			vars.doResetAndStart = true;
-			vars.splits.Clear();
-		}
-		// reset checks
-		vars.check1 = false; 
-	} 
+	if (current.scriptName != old.scriptName) {
+		vars.debugInfo(string.Format("scriptName old: {0} new: {1}", old.scriptName, current.scriptName));
+	}
 
 	// If timer state changes.
 	if (timer.CurrentPhase != vars.prevPhase) {
@@ -254,61 +240,58 @@ update {
 		// Stores the current phase the timer is in, so we can use the old one on the next frame.
 		vars.prevPhase = timer.CurrentPhase;
 	}
- 
-
-	// increment ticks on every update
-	// vars.tick++;
 }
 
 split {
 	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
-	// do not split unless 2 ticks have passed since script init
-	if (vars.tick < 2) return false;
+	if (!vars.correctEpisode) return false;
 
-	foreach (var a in vars.addresses) {
-		if (settings.ContainsKey(a.Key) && settings[a.Key] && vars.correctEpisode) {
-			var val = vars.memoryWatchers[a.Key];
-			if (val.Current == val.Old + 1 && !vars.splits.Contains(a.Key+val.Current)) {
-				vars.splits.Add(a.Key+val.Current);
-				vars.print(string.Format("Split reason: {0} - ({1} > {2})", a.Key, val.Current, val.Old));
-				return true;
+	bool doSplit = false;
+
+	if (vars.queueSplit) {
+		if (settings["splitOnStart"]) {
+			var mw = vars.memoryWatchers["iMissionsAttempted"];
+			if (mw.Current == mw.Old + 1) {
+				doSplit = true;
 			}
+		} else {
+			doSplit = true;
 		}
 	}
-	if (settings["ransomSplit"] && vars.correctEpisode)
-	{		
-		if (current.scriptName != "gerry3c" && old.scriptName == "gerry3c") {
-			return true;
-		}
+
+	if (doSplit) {
+		vars.queueSplit = false;
+		vars.debugInfo("doing split");
 	}
-	return false;
+
+	return doSplit;
 }
 
 reset {
 	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
-	// do not reset unless 2 ticks have passed since script init
-	if (vars.tick < 2) return false;
+	if (!vars.correctEpisode) return false;
 
-	return vars.doResetAndStart;
+	return vars.doResetStart;
 }
 
 start {
 	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
-	// do not start unless 2 ticks have passed since script init
-	if (vars.tick < 2) return false;
+	if (!vars.correctEpisode) return false;
 
-	return vars.doResetAndStart;
+	return vars.doResetStart;
 }
 
 isLoading {
-	if (vars.correctEpisode)
-	{
-		return current.isLoading == 0; 
-	}
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return false;
+
+	if (!vars.correctEpisode) return false;
+
+	return current.isLoading == 0; 
 }

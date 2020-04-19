@@ -4,36 +4,36 @@
  * https://github.com/jfoster/LiveSplit.ASL/tree/dev/GTAIV
  */
 
-// EFLC.exe
-
 // isLoading before 1.2.0.32: 0 if loading, 4 in normal gameplay, sometimes seemingly random values in fade ins/outs
 // isLoading in 1.2.0.32: 0 if loading, random values if not loading
 // isFirstMission: 30000 when I Luv LC... appears on screen
 
 // Complete Edition
 state("GTAIV", "1.2.0.32") {
-	uint isLoading : 0xDD5F60; 
-	uint isFirstMission : 0xD8E050; 
+	uint isLoading : 0xDD5F60;
+	uint isFirstMission : 0xD8E050;
+	uint episodeID : 0xDD7040;
 }
-
+ 
 // Patch 3
 state("EFLC", "1.1.3.0") {
 	uint isLoading : 0x16EB80, 0x10;
 	uint isFirstMission : 0xD6A7E0;
+	uint episodeID : 0xD43DB4;
 }
 
 // Patch 2
 state("EFLC", "1.1.2.0") {
 	uint isLoading : 0x99F90, 0x10;
 	uint isFirstMission : 0xD0D8B8;
+	uint episodeID : 0xC4D7C4; // could also use 0xC619D8
 }
 
 startup {
 	refreshRate = 60;
 
 	vars.prevPhase = null; // keeps track of previous timer phase
-	vars.splits = new List<string>(); // keeps track of splitted splits
-	vars.tick = 0; // keeps track of ticks since script init
+	vars.splits = new HashSet<string>(); // keeps track of splitted splits
 
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
@@ -42,7 +42,7 @@ startup {
 		{"1.1.2.0", 0x0},
 	};
 
-	vars.addresses = new Dictionary<string, int> {
+	vars.stats = new Dictionary<string, int> {
 		{"fBasejumps", 0xDA563C},
 		{"fSeagulls", 0xDA564C},
 		{"fSeagullsCE", 0xDA57E4},
@@ -53,145 +53,147 @@ startup {
 		{"iRandomEncounters", 0xDA5934},
 	};
 
-	Action<string, bool, string, string, string> addSetting = (id, defaultVal, label, parent, tooltip) => {
+	Action<string, string, string, string, bool> addSetting = (parent, id, label, tooltip, defaultVal) => {
 		settings.Add(id, defaultVal, label, parent);
 		settings.SetToolTip(id, tooltip);
 	};
 
-	addSetting("iMissionsPassed", true, "Story Missions (Any%)", null, "Split upon completion of a main story mission");
-	addSetting("fSeagulls", false, "Seagulls", null, "Split upon seagull being exterminated");
-	addSetting("fSeagullsCE", false, "Seagulls (Complete Edition)", null, "Split upon seagull being exterminated (only for the Complete Edition/newest Steam release)");
-	addSetting("debug", false, "Debug", null, "Print debug messages to the windows error console");
+	addSetting(null, "iMissionsPassed", "Story Missions (Any%)", "Split upon completion of a main story mission", true);
+	addSetting("iMissionsPassed", "splitOnStart", "Split on Mission Start (Experimental)", "Delay splitting until next mission start", false);
+
+	addSetting(null, "fSeagulls", "Seagulls", "Split upon seagull being exterminated", false);
+
+	addSetting(null, "debug", "Debug", "Print debug messages to the windows error console", false);
 }
 
 init {
-	vars.enabled = true;
-	vars.doResetAndStart = false;
+	vars.enabled = false;
+	vars.doResetStart = false;
+	vars.queueSplit = false;
 	vars.correctEpisode = false;
 
 	// Create new empty MemoryWatcherList
 	vars.memoryWatchers = new MemoryWatcherList();
 
-	// print() wrapper
+	// print() wrapper 
 	Action<object> DbgInfo = (obj) => {
 		if (settings["debug"]) {
 			print("[LiveSplit.GTATLAD.asl] " + obj.ToString());
 		}
 	};
-	vars.print = DbgInfo;
+	vars.debugInfo = DbgInfo;
 
-	// Delay init
-	System.Threading.Thread.Sleep(2000);
-
-	// Get EFLC.exe version
-	var fvi = modules.First().FileVersionInfo;
+	// Get exe version
+	var fvi = modules.First().FileVersionInfo; // Don't use FileVersionInfo.FileVersion as it produces string with commas and spaces.
 	version = string.Join(".", fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart, fvi.FilePrivatePart);
-	if (version == "") {
-		vars.print("EFLC.exe/GTAIV.exe version unsupported");
-		vars.enabled = false;
-	}
+
+	vars.version = new Version(version);
+	vars.debugInfo("EFLC.exe " + version);
+
+	vars.isCE = vars.version.Major == 1 && vars.version.Minor >= 2; // GTAIV 1.2.x.x
+
+	int voffset = 0x0;
+	bool versionCheck = vars.offsets.TryGetValue(version, out voffset); // true if version exists within version dictionary
+	vars.voffset = voffset;
+
+	bool xlivelessCheck;
 
 	// Get xlive.dll ModuleMemorySize - not needed for CE
-	if (version == "1.2.0.32")
+	if (vars.isCE) // GTAIV 1.2.x.x
 	{
-		vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD7040)){ Name = "EpisodeID"}); // 0 for IV, 1 for TLAD, 2 for TBOGT
-		if (!String.IsNullOrEmpty(version)) {
-			vars.enabled = true;
-		}
+		xlivelessCheck = true;
 	}
-	else {
+	else
+	{
+		// Get xlive.dll ModuleMemorySize
 		int mms = modules.Where(m => m.ModuleName == "xlive.dll").First().ModuleMemorySize;
-		vars.print("xlive.dll ModuleMemorySize: " + mms.ToString());
-		bool listenerxliveless = mms > 50000 && mms < 200000;
-		if (!listenerxliveless) {
-			// only listener's xliveless is supported
-	 		vars.print("Unsupported xlive.dll");
-			vars.enabled = false;
+		vars.debugInfo("xlive.dll ModuleMemorySize: " + mms.ToString());
+
+		// listener's xliveless should be within this range
+		xlivelessCheck = mms > 50000 && mms < 200000;
+	}
+
+	if (xlivelessCheck && versionCheck) {
+		vars.debugInfo("enabling splitter");
+		vars.enabled = true;
+	}
+
+	// MemoryWatcher wrapper
+	Action<string, int, int, int> mw = (name, address, aoffset, poffset) => {
+		var dp = new DeepPointer(address+aoffset);
+
+		if (poffset != 0x0) {
+			dp = new DeepPointer(address+aoffset, poffset);
 		}
-	}
 
-	// Set offset for specific game version
-	vars.voffset = 0x0;
-	bool first = true;
-	foreach (var v in vars.offsets) {
-		if (first || v.Key == version) {
-			first = false;
-			vars.voffset = v.Value;
+		var type = name.Substring(0,1);
+		if (type == "f") {
+			vars.memoryWatchers.Add(new MemoryWatcher<float>(dp) { Name = name });
+		} else if (type == "i") {
+			vars.memoryWatchers.Add(new MemoryWatcher<int>(dp){ Name = name });
 		}
-	}
+	};
 
-	if (version == "1.2.0.32") {
-		// MemoryWatcher wrapper
-		Action<string, int, int> mw = (name, address, aoffset) => {
-			//var dp = new DeepPointer(address+aoffset);
-			var type = name.Substring(0,1);
-			//print("creating complete edition memory watcher" + name); 
-			if (type == "f") {
-				vars.memoryWatchers.Add(new MemoryWatcher<float>(new DeepPointer("GTAIV.exe", address+aoffset)) { Name = name });
-			} else if (type == "i") {
-				vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", address+aoffset)){ Name = name }); 
-			}
-			print("creating memory watcher " + name);
-		};
-
-		// Add memory watcher for each address
-		foreach (var a in vars.addresses) {
-			mw(a.Key, a.Value, vars.voffset);  
-		};
-	}
-	else {
-		// MemoryWatcher wrapper
-		Action<string, int, int, int> mw = (name, address, aoffset, poffset) => {
-			var dp = new DeepPointer(address+aoffset, poffset);
-			var type = name.Substring(0,1);
-			if (type == "f") {
-				vars.memoryWatchers.Add(new MemoryWatcher<float>(dp) { Name = name });
-			} else if (type == "i") {
-				vars.memoryWatchers.Add(new MemoryWatcher<int>(dp){ Name = name });
-			}
-		};
-
-		// Add memory watcher for each address
-		foreach (var a in vars.addresses) {
+	// Add memory watcher for each address
+	foreach (var a in vars.stats) {
+		if (vars.isCE) {
+			mw(a.Key, a.Value, vars.voffset, 0x0);
+		} else {
 			mw(a.Key, a.Value, vars.voffset, 0x10);
-		}; 
-	} 
+		}
+	}
+
+	// fix stuff located at different addresses in CE
+	// this is a bit of a hack and should be changed.
+	if (vars.isCE) {
+		var gulls = vars.memoryWatchers["fSeagulls"];
+		var gullsce = vars.memoryWatchers["fSeagullsCE"];
+
+		vars.memoryWatchers.Remove(gulls);
+		vars.memoryWatchers.Remove(gullsce);
+
+		gullsce.Name = gulls.Name;
+		vars.memoryWatchers.Add(gullsce);
+	}
 }
 
 update {
-	if (version == "1.2.0.32")
-	{		
-		if (vars.memoryWatchers["EpisodeID"].Current == 2) 
-		{
-			vars.correctEpisode = true;
-			print("Current game: TBOGT"); 
-		}
-		else {
-			vars.correctEpisode = false; 
-		}	
-	}
-	else {
-		vars.correctEpisode = true;
-	}
-
-
-	// Prevent actions happening until atleast 2 ticks have occured since script startup
-	if (vars.tick < 2) {
-		vars.tick++;
-		return;
-	}
-
-	// if doResetAndStart was set to true on previous update, reset it to false
-	if (vars.doResetAndStart) vars.doResetAndStart = false;
-
 	// disable timer control actions if not enabled
 	if (!vars.enabled) return;
 
+	vars.correctEpisode = current.episodeID == 2;
+	if (!vars.correctEpisode) return;
+
 	vars.memoryWatchers.UpdateAll(game);
 
+	// loop through memory watchers and if it matches an enabled setting then check if it's increased
+	foreach (var mw in vars.memoryWatchers) {
+		var key = mw.Name;
+		if (settings.ContainsKey(key) && settings[key]) {
+			if (!vars.splits.Contains(key+mw.Current) && mw.Current == mw.Old + 1) {
+				vars.splits.Add(key+mw.Current);
+				vars.queueSplit = true;
+
+				vars.debugInfo(string.Format("Split queued: {0} - current: {1} old: {2}", key, mw.Current, mw.Old));
+			}
+		}
+	}
+
+	// if doResetStart was set to true on previous update, reset it to false
+	vars.doResetStart = false;
+
 	// Triggers when "I Luv LC..." is visible on-screen.
-	if (old.isFirstMission != 30000 && current.isFirstMission == 30000 && current.isLoading == 0 && vars.memoryWatchers["iMissionsAttempted"].Current == 0 && vars.correctEpisode) {
-		vars.doResetAndStart = true;
+	bool startCheck = old.isFirstMission != 30000 && current.isFirstMission == 30000 && current.isLoading == 0;
+
+	// Check if the timer is not running or has been running for more than 1 seconds.
+	double ts = timer.CurrentTime.RealTime.GetValueOrDefault().TotalSeconds;
+	bool timerCheck = timer.CurrentPhase == TimerPhase.NotRunning || ts >= 1.0;
+
+	// check if missions attempted is set to 0.
+	bool missionCheck = vars.memoryWatchers["iMissionsAttempted"].Current == 0;
+
+	if (startCheck && timerCheck && missionCheck && vars.correctEpisode) {
+		vars.doResetStart = true;
 		vars.splits.Clear();
 	}
 
@@ -207,33 +209,55 @@ update {
 }
 
 split {
-	// do not split unless 2 ticks have passed since initialization
-	if (vars.tick < 2) return false;
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return false;
 
-	foreach (var a in vars.addresses) {
-		if (settings.ContainsKey(a.Key) && settings[a.Key] && vars.correctEpisode) {
-			var val = vars.memoryWatchers[a.Key];
-			if (val.Current > val.Old && !vars.splits.Contains(a.Key+val.Current)) {
-				vars.splits.Add(a.Key+val.Current);
-				vars.print(string.Format("Split reason: {0} - ({1} > {2})", a.Key, val.Current, val.Old));
-				return true;
+	if (!vars.correctEpisode) return false;
+
+	bool doSplit = false;
+
+	if (vars.queueSplit) {
+		if (settings["splitOnStart"]) {
+			var mw = vars.memoryWatchers["iMissionsAttempted"];
+			if (mw.Current == mw.Old + 1) {
+				doSplit = true;
 			}
+		} else {
+			doSplit = true;
 		}
 	}
-	return false;
+
+	if (doSplit) {
+		vars.queueSplit = false;
+		vars.debugInfo("doing split");
+	}
+
+	return doSplit;
 }
 
 reset {
-	return vars.doResetAndStart;
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return false;
+
+	if (!vars.correctEpisode) return false;
+
+	return vars.doResetStart;
 }
 
 start {
-	return vars.doResetAndStart;
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return false;
+
+	if (!vars.correctEpisode) return false;
+
+	return vars.doResetStart;
 }
 
 isLoading {
-	if (vars.correctEpisode)
-	{
-		return current.isLoading == 0; 
-	}
+	// Disable timer control actions if not enabled
+	if (!vars.enabled) return false;
+
+	if (!vars.correctEpisode) return false;
+
+	return current.isLoading == 0; 
 }
