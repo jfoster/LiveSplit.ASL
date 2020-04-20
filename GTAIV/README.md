@@ -14,28 +14,28 @@ LiveSplit Autosplitter for GTA IV + EFLC
 <tr><th>GTAIV.exe</th><th>EFLC.exe</th></tr>
 <tr><td>
 
-|Version|Notes|Supported?|
-|:-------:|:--------:|:---:|
-|1.2.0.32|Complete Edition (Current Steam Release)|Yes|
-|1.0.8.0|Patch 8|Yes|
-|1.0.7.0|Patch 7|Yes|
-|1.0.6.0|Patch 6|Yes|
-|1.0.0.4|Patch 5?|No|
-|1.0.4.0|Patch 4|Yes|
-|1.0.3.0|Patch 3|No|
-|1.0.2.0|Patch 2|No|
-|1.0.1.0|Patch 1|No|
-|1.0.0.0|Original Release|No|
+| Version  |                  Notes                   | Supported? |
+| :------: | :--------------------------------------: | :--------: |
+| 1.2.0.32 | Complete Edition (Current Steam Release) |    Yes     |
+| 1.0.8.0  |                 Patch 8                  |    Yes     |
+| 1.0.7.0  |                 Patch 7                  |    Yes     |
+| 1.0.6.0  |                 Patch 6                  |    Yes     |
+| 1.0.0.4  |                 Patch 5                  |    Yes     |
+| 1.0.4.0  |                 Patch 4                  |    Yes     |
+| 1.0.3.0  |                 Patch 3                  |     No     |
+| 1.0.2.0  |                 Patch 2                  |     No     |
+| 1.0.1.0  |                 Patch 1                  |     No     |
+| 1.0.0.0  |              Retail Release              |     No     |
 
 </td><td>
 
-|Version|Notes|Supported?|
-|:------:|:--------:|:---:|
-|1.2.0.32|Complete Edition (bundled with GTA IV, Current Steam Release)|Yes|
-|1.1.3.0|Patch 3|Yes|
-|1.1.2.0|Patch 2|Yes|
-|1.1.1.0|Patch 1|No|
-|1.1.0.0|Original Release|No|
+| Version  |                             Notes                             | Supported? |
+| :------: | :-----------------------------------------------------------: | :--------: |
+| 1.2.0.32 | Complete Edition (bundled with GTA IV, Current Steam Release) |    Yes     |
+| 1.1.3.0  |                            Patch 3                            |    Yes     |
+| 1.1.2.0  |                            Patch 2                            |    Yes     |
+| 1.1.1.0  |                            Patch 1                            |     No     |
+| 1.1.0.0  |                        Retail Release                         |     No     |
 
 </td></tr></table>
 

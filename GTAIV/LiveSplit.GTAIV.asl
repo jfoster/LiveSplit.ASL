@@ -36,6 +36,13 @@ state ("GTAIV", "1.0.6.0") {
 	string10 scriptName : 0x01582320, 0x58, 0x70;
 }
 
+// Patch 5
+state ("GTAIV", "1.0.0.4") {
+	uint isLoading : 0xC7D18C;
+	uint whiteLoadingScreen : 0x13DFCF0;
+	string10 scriptName : 0x014DF6C8, 0x58, 0x70;
+}
+
 // Patch 4
 state ("GTAIV", "1.0.4.0") {
 	uint isLoading : 0xC07A0C;
@@ -51,6 +58,7 @@ startup {
 		{"1.0.7.0", 0x0},
 		{"1.0.5.2", -0x1020},
 		{"1.0.6.0", -0xFE0},
+		{"1.0.0.4", -0x4B7BC8},
 		{"1.0.4.0", -0x563040},
 	};
 
