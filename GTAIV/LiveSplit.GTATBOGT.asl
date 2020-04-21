@@ -166,19 +166,6 @@ update {
 
 	vars.memoryWatchers.UpdateAll(game);
 
-	// loop through memory watchers and if it matches an enabled setting then check if it's increased
-	foreach (var mw in vars.memoryWatchers) {
-		var key = mw.Name;
-		if (settings.ContainsKey(key) && settings[key]) {
-			if (!vars.splits.Contains(key+mw.Current) && mw.Current == mw.Old + 1) {
-				vars.splits.Add(key+mw.Current);
-				vars.queueSplit = true;
-
-				vars.debugInfo(string.Format("Split queued: {0} - current: {1} old: {2}", key, mw.Current, mw.Old));
-			}
-		}
-	}
-
 	// if doResetStart was set to true on previous update, reset it to false
 	vars.doResetStart = false;
 
@@ -214,25 +201,43 @@ split {
 
 	if (!vars.correctEpisode) return false;
 
-	bool doSplit = false;
-
 	if (vars.queueSplit) {
-		if (settings["splitOnStart"]) {
-			var mw = vars.memoryWatchers["iMissionsAttempted"];
-			if (mw.Current == mw.Old + 1) {
-				doSplit = true;
-			}
-		} else {
-			doSplit = true;
+		var mw = vars.memoryWatchers["iMissionsAttempted"];
+		if (mw.Current == mw.Old + 1) {
+			return true;
 		}
 	}
 
-	if (doSplit) {
-		vars.queueSplit = false;
-		vars.debugInfo("doing split");
+	// loop through memory watchers and if it matches an enabled setting then check if it's increased
+	foreach (var mw in vars.memoryWatchers) {
+		var key = mw.Name;
+		
+		// if there's a settings enabled with the same key
+		if (settings.ContainsKey(key) && settings[key]) {
+			// if the value increases and it hasn't already been splitted for
+			if (mw.Current == mw.Old + 1 && !vars.splits.Contains(key+mw.Current)) {
+				vars.splits.Add(key+mw.Current);
+
+				vars.debugInfo(string.Format("Split reason: {0} - current: {1} old: {2}", key, mw.Current, mw.Old));
+
+				// delay splitting for mission passed if splitOnStart is enabled
+				if (key == "iMissionsPassed" && settings["splitOnStart"]) {
+					vars.queueSplit = true;
+				} else {
+					return true;
+				}
+			}
+		}
 	}
 
-	return doSplit;
+	if (settings["ransomSplit"])
+	{		
+		if (current.scriptName != "gerry3c" && old.scriptName == "gerry3c") {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 reset {
