@@ -63,6 +63,7 @@ startup {
 	};
 
 	vars.stats = new Dictionary<string, int> {
+		{"fGameTime", 0x011C3F60},
 		{"iMissionsPassed", 0x011C4460},
 		{"iMissionsFailed", 0x011C4464},
 		{"iMissionsAttempted", 0x011C4468},
@@ -92,6 +93,8 @@ startup {
 	addSetting(null, "iMostWanted", "Most Wanted", "Split upon killing a most wanted person(s)", false);
 	addSetting(null, "iPigeons", "Pigeons", "Split upon extermination of a flying rat", false);
 
+	addSetting(null, "gameTime", "In-Game Time (Experimental)", "Game Timer shows IGT rather than loadless time", false);
+	
 	addSetting(null, "debug", "Debug", "Print debug messages to the windows error console", false);
 }
 
@@ -230,7 +233,6 @@ update {
 }
 
 split {
-	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
 	if (!vars.correctEpisode) return false;
@@ -275,7 +277,6 @@ split {
 }
 
 reset {
-	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
 	if (!vars.correctEpisode) return false;
@@ -284,7 +285,6 @@ reset {
 }
 
 start {
-	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
 	if (!vars.correctEpisode) return false;
@@ -293,10 +293,23 @@ start {
 }
 
 isLoading {
-	// Disable timer control actions if not enabled
 	if (!vars.enabled) return false;
 
 	if (!vars.correctEpisode) return false;
 
-	return current.isLoading == 0; 
+	// this needs to be true to enable gameTime
+	if (settings["gameTime"]) return true;
+
+	return current.isLoading == 0;
+}
+
+gameTime {
+	if (!vars.enabled) return null;
+
+	if (!vars.correctEpisode) return null;
+
+	if (!settings["gameTime"]) return null;
+
+	var gt = vars.memoryWatchers["fGameTime"];
+	return TimeSpan.FromMilliseconds(gt.Current);
 }
