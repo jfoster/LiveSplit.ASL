@@ -5,10 +5,18 @@
  */
 
 // isLoading before 1.2.0.32: 0 if loading, 4 in normal gameplay, sometimes seemingly random values in fade ins/outs
-// isLoading in 1.2.0.32: 0 if loading, random values if not loading
+// isLoading in/after 1.2.0.32: 0 if loading, random values if not loading
 // isFirstMission: 30000 when Clean and Serene... appears on screen
 
-// Complete Edition
+
+// current Complete Edition
+state("GTAIV", "1.2.0.43") {
+	uint isLoading : 0xD5CD3C;
+	uint isFirstMission : 0xD8DFD0;
+	uint episodeID : 0xDD6FD0;
+}
+
+// old Complete Edition
 state("GTAIV", "1.2.0.32") {
 	uint isLoading : 0xDD5F60;
 	uint isFirstMission : 0xD8E050;
@@ -32,6 +40,7 @@ state("EFLC", "1.1.2.0") {
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
+		{"1.2.0.43", 0x112118},
 		{"1.2.0.32", 0x112188},
 		{"1.1.3.0", -0xC020},
 		{"1.1.2.0", 0x0},
@@ -230,13 +239,6 @@ split {
 		}
 	}
 
-	if (settings["ransomSplit"])
-	{		
-		if (current.scriptName != "gerry3c" && old.scriptName == "gerry3c") {
-			return true;
-		}
-	}
-
 	return false;
 }
 
@@ -246,6 +248,14 @@ reset {
 	if (!vars.correctEpisode) return false;
 
 	return vars.doResetStart;
+}
+
+start {
+	if (!vars.enabled) return false;
+
+	if (!vars.correctEpisode) return false;
+
+	return vars.doResetStart;	
 }
 
 isLoading {
