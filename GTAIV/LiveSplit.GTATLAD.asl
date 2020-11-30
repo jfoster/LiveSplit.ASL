@@ -11,7 +11,7 @@
 
 // current Complete Edition
 state("GTAIV", "1.2.0.43") {
-	uint isLoading : 0xD5CD3C;
+	uint isLoading : 0xD747A4;
 	uint isFirstMission : 0xD8DFD0;
 	uint episodeID : 0xDD6FD0;
 }

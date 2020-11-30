@@ -10,7 +10,7 @@
 
 // current Complete Edition
 state ("GTAIV", "1.2.0.43") {
-	uint isLoading : 0xD5CD3C;
+	uint isLoading : 0xD747A4;
 	uint whiteLoadingScreen : 0x017B37D0;
 	string10 scriptName : 0x0174AF04, 0x58, 0x70;
 }
