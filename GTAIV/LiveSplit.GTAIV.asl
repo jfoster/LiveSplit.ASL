@@ -8,7 +8,15 @@
 // isLoading in 1.2.0.32: 0 if loading, random values if not loading
 // whiteLoadingScreen: a number that isn't 0 while white screen is showing (65536), 0 on black screen
 
-// Complete Editon
+// current Complete Edition
+state ("GTAIV", "1.2.0.43") {
+	uint isLoading : 0xD747A4;
+	uint whiteLoadingScreen : 0x017B37D0;
+	string10 scriptName : 0x0174AF04, 0x58, 0x70;
+}
+
+
+// original Complete Edition
 state ("GTAIV", "1.2.0.32") {
 	uint isLoading : 0xD74824;
 	uint whiteLoadingScreen : 0x017B3840;
@@ -53,6 +61,7 @@ state ("GTAIV", "1.0.4.0") {
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
+		{"1.2.0.43", -0x30CA98},
 		{"1.2.0.32", -0x30CA28},  
 		{"1.0.8.0", -0x398940},
 		{"1.0.7.0", 0x0},
@@ -130,7 +139,12 @@ init {
 	// Get xlive.dll ModuleMemorySize - not needed for CE
 	if (vars.isCE) // GTAIV 1.2.x.x
 	{
-		vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD7040)){ Name = "EpisodeID"}); // 0 for IV, 1 for TLAD, 2 for TBOGT
+		if (vars.version.ToString() == "1.2.0.43") {
+			vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD6FD0)){ Name = "EpisodeID"});
+		}		
+		else if (vars.version.ToString() == "1.2.0.32") {
+			vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD7040)){ Name = "EpisodeID"}); // 0 for IV, 1 for TLAD, 2 for TBOGT
+		}	
 		xlivelessCheck = true;
 	}
 	else
@@ -145,6 +159,7 @@ init {
 
 	if (xlivelessCheck && versionCheck) {
 		vars.enabled = true;
+		vars.debugInfo("enabling splitter");
 	}
 
 	// MemoryWatcher wrapper
