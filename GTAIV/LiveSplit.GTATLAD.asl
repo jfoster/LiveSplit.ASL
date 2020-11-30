@@ -8,7 +8,14 @@
 // isLoading in 1.2.0.32: 0 if loading, random values if not loading
 // isFirstMission: 30000 when Clean and Serene... appears on screen
 
-// Complete Edition
+// current Complete Edition
+state("GTAIV", "1.2.0.43") {
+	uint isLoading : 0xD747A4;
+	uint isFirstMission : 0xD8DFD0;
+	uint episodeID : 0xDD6FD0;
+}
+
+// old Complete Edition
 state("GTAIV", "1.2.0.32") {
 	uint isLoading : 0xDD5F60;
 	uint isFirstMission : 0xD8E050;
@@ -32,6 +39,7 @@ state("EFLC", "1.1.2.0") {
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
+		{"1.2.0.43", 0x112118},
 		{"1.2.0.32", 0x112188},
 		{"1.1.3.0", -0xC020},
 		{"1.1.2.0", 0x0},
