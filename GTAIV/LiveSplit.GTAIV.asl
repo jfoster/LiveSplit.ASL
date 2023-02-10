@@ -9,12 +9,18 @@
 // whiteLoadingScreen: a number that isn't 0 while white screen is showing (65536), 0 on black screen
 
 // current Complete Edition
-state ("GTAIV", "1.2.0.43") {
+state ("GTAIV", "1.2.0.59") {
 	uint isLoading : 0xD747A4;
 	uint whiteLoadingScreen : 0x017B37D0;
 	string10 scriptName : 0x0174AF04, 0x58, 0x70;
 }
 
+// Complete Edition until 9/02/2023
+state ("GTAIV", "1.2.0.43") {
+	uint isLoading : 0xD747A4;
+	uint whiteLoadingScreen : 0x017B37D0;
+	string10 scriptName : 0x0174AF04, 0x58, 0x70;
+}
 
 // original Complete Edition
 state ("GTAIV", "1.2.0.32") {
@@ -61,6 +67,7 @@ state ("GTAIV", "1.0.4.0") {
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
+		{"1.2.0.59", -0x30CA98},
 		{"1.2.0.43", -0x30CA98},
 		{"1.2.0.32", -0x30CA28},  
 		{"1.0.8.0", -0x398940},
@@ -142,7 +149,7 @@ init {
 	// Get xlive.dll ModuleMemorySize - not needed for CE
 	if (vars.isCE) // GTAIV 1.2.x.x
 	{
-		if (vars.version.ToString() == "1.2.0.43") {
+		if (vars.version.ToString() == "1.2.0.43" || vars.version.ToString() == "1.2.0.59") {
 			vars.memoryWatchers.Add(new MemoryWatcher<int>(new DeepPointer("GTAIV.exe", 0xDD6FD0)){ Name = "EpisodeID"});
 		}		
 		else if (vars.version.ToString() == "1.2.0.32") {
