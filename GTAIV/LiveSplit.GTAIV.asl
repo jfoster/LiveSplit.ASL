@@ -236,7 +236,7 @@ startup {
 			addSetting("FIN", "FIN2", "If the Price is Right | A Dish Served Cold", null, true);
 			//addSetting("FIN", "FIN3", "Mr. & Mrs. Bellic", null, true); //is here to keep mission tree structure
 			addSetting("FIN", "FIN4", "In Mourning", null, true);
-			addSetting("FIN", "FIN5", "A Revenger's Tragedy | Out of Commission", "Any%/Classic final split - first frame of final cutscene", true);
+			addSetting("FIN", "FIN5", "A Revenger's Tragedy | Out of Commission", "Any% / Classic final split - first frame of final cutscene", true);
 			addSetting("FIN", "FIN6", "Credits", "Split after finishing credits", false);
 			
 	addSetting(null, "splitOnStart", "Split on Mission Start (Experimental)", "Delay splitting until starting any next story mission", false);
@@ -535,14 +535,14 @@ split {
 	if (settings["RB5"] && (current.LastMissionName == 892755789 && old.LastMissionName != 892755789 && current.isLoading != 0)) return true;
 	if (settings["RB6"] && (current.LastMissionName == 909533005 && old.LastMissionName != 909533005 && current.isLoading != 0)) return true;
 	
-	if (settings["FIN1"] && (current.LastMissionName == 1229140294 && old.LastMissionName != 1229140294 && current.isLoading != 0)) return true;
-	if (settings["FIN2"] && (current.LastMissionName == 825843533 && old.LastMissionName != 825843533 && current.isLoading != 0) || (current.LastMissionName == 842620749 && old.LastMissionName != 842620749 && current.isLoading != 0)) return true;
+	if (settings["FIN1"] && (current.LastMissionName == 1229140294 && old.LastMissionName != 1229140294 && current.isLoading != 0)) return true; // one last thing
+	if (settings["FIN2"] && (current.LastMissionName == 825843533 && old.LastMissionName != 825843533 && current.isLoading != 0) || (current.LastMissionName == 842620749 && old.LastMissionName != 842620749 && current.isLoading != 0)) return true; // deal || revenge
 	//if (settings["FIN3"] // wedding, doesn't have LastMissionName value
-	if (settings["FIN4"] && (current.LastMissionName == 1179464006 && old.LastMissionName != 1179464006 && current.isLoading != 0)) return true;
+	if (settings["FIN4"] && (current.LastMissionName == 1179464006 && old.LastMissionName != 1179464006 && current.isLoading != 0)) return true; // in mourning
 	
-	// Any%/Classic Final Split - first frame of final cutscene at the end of 'A Revenger's Tragedy' or 'Out of Commission'
+	// Any% / Classic Final Split - first frame of final cutscene at the end of 'A Revenger's Tragedy' or 'Out of Commission'
 	// if In Mourning is finished + there's a cinematic cutscene playing + game is not loading at the moment:
-	// that means player completed the game, a.k.a. finished any% run
+	// that means player completed the game, a.k.a. finished any% / classic speedrun
 	// it works, because after finishing In Mourning there's no other possible cutscene to play besides the final one
 	if (settings["FIN5"] && (current.LastMissionName == 1179464006 && current.isCutsceneRunning == 8 && old.isCutsceneRunning != 8 && current.isLoading != 0)) return true;
 	
