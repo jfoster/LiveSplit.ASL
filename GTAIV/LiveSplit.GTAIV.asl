@@ -427,7 +427,7 @@ split {
 	// game loading check is here to prevent splitting after doing video editor warp or loading a savegame
 	if (settings["ROM1"] && (current.LastMissionName == 3235661 && old.LastMissionName != 3235661 && current.isLoading != 0)) return true;
 	if (settings["ROM2"] && (current.LastMissionName == 3301197 && old.LastMissionName != 3301197 && current.isLoading != 0)) return true;
-	if (settings["ROM3"] && (current.LastMissionName == 3366733 && old.LastMissionName != 3366733) && current.isLoading != 0) return true;
+	if (settings["ROM3"] && (current.LastMissionName == 3366733 && old.LastMissionName != 3366733 && current.isLoading != 0)) return true;
 	if (settings["ROM4"] && (current.LastMissionName == 3432269 && old.LastMissionName != 3432269 && current.isLoading != 0)) return true;
 	if (settings["ROM5"] && (current.LastMissionName == 3497805 && old.LastMissionName != 3497805 && current.isLoading != 0)) return true;
 	if (settings["ROM6"] && (current.LastMissionName == 3563341 && old.LastMissionName != 3563341 && current.isLoading != 0)) return true;
