@@ -51,19 +51,23 @@ LiveSplit Autosplitter for Grand Theft Auto IV and Episodes from Liberty City
 
 Click the "Download Zip" button to download this repository, including autosplitter script, as a .zip file. Use your favourite unarchive utility to unzip the .zip file. -->
 
-<!-- ## Usage
+## Usage
 
 <!-- Add a Scriptable Auto Splitter component to your Layout.
 Right-click on LiveSplit and choose "Edit Layout..." to open the Layout Editor, then click on the Plus-sign and choose "Scriptable Auto Splitter" from the section "Control". You can set the Path of the Script by going into the component settings of the Scriptable Auto Splitter. To get to the settings of the component you can either double click it in the Layout Editor or go into to the Scriptable Auto Splitter Tab of the Layout Settings. Once you've set the Path, the script should automatically load and work. -->
 
-<!-- Open Livesplit -> right click, click Edit Splits... -> select a game from the top drop-down menu, if you haven't yet -> choose category from drop-down menu below that, if you haven't yet -> click Activate button -> click Settings button -> customize the autosplitter to your likings -->
+Open Livesplit -> right click, click Edit Splits... -> select a game from the top drop-down menu, if you haven't yet -> choose category from drop-down menu below that, if you haven't yet -> click Activate button -> click Settings button -> customize the AutoSplitter to your likings
 
 ## Quirks/Bugs
 
-To make Split on Mission Start work, you have to pass some kind of mission first. Then next mission you would'd start will become split on.
+To make Split on Mission Start work, you have to pass some kind of mission first. Then the next mission you would start will become split on.
 
 If Split on Mission Start is enabled and you fail and replay a mission, split will happen.
 
 ## Support
 
 kocurro14 on discord
+
+## License
+
+[MIT](https://github.com/jfoster/LiveSplit.ASL/blob/stable/LICENSE.txt)
