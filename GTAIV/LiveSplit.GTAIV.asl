@@ -1,14 +1,14 @@
 /*
  * GTA IV LiveSplit Autosplitter
  * Originally created by possessedwarrior, adapted by Rave, updated to work with the Complete Edition by hoxi, expanded upon features by Kocurro14.
- * https://github.com/Kocurro14/LiveSplit.ASL/tree/stable/GTAIV
+ * https://github.com/jfoster/LiveSplit.ASL/tree/stable/GTAIV
  */
 
 // isLoading before 1.2.0.32: 0 if loading, 4 in normal gameplay, sometimes seemingly random values in fade ins/outs
 // isLoading in/after 1.2.0.32: 0 if loading, random values if not loading
 // whiteLoadingScreen: a number that isn't 0 while white screen is showing (65536), 0 on black screen
 
-// LastMissionName values refer to: https://github.com/Kocurro14/LiveSplit.ASL/blob/stable/GTAIV/LastMissionName_details
+// LastMissionName values refer to: https://github.com/jfoster/LiveSplit.ASL/blob/stable/GTAIV/LastMissionName_details
 
 // isCutsceneRunning: 0 if not running, 8 if running, 10 if skipped
 // the cinematic cutscenes, not scripted ones with pre-made animations
