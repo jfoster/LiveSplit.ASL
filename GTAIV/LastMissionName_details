@@ -97,3 +97,62 @@ iv
 842620749 ; a dish served cold
 1179464006 ; in mourning
 1128549957 ; story complete
+
+ransom is not a mission
+mr & mrs bellic does not have LastMissionName value
+
+
+In case of TLAD & TBOGT, both of these values seen here are correct.
+
+tlad
+4456497 ; 49 ; clean and serene
+4456498 ; 50 ; angels in america
+4456499 ; 51 ; its war
+4456500 ; 52 ; actionreaction
+4456501 ; 53 ; buyers market
+4456502 ; 54 ; this shits cursed
+4456503 ; 55 ; liberty city choppers
+4456504 ; 56 ; bad cop drop
+1409298481 ; 12337 ; hit the pipe
+1409298482 ; 12338 ; marta full of grace
+1409298737 ; 12593 ; end of chapter
+1409298738 ; 12594 ; shifting weight
+1409298993 ; 12849 ; bad standing
+1409298994 ; 12850 ; diamonds in the rough
+1409299249 ; 13105 ; politics
+1409299250 ; 13106 ; collectors item
+1409299505 ; 13361 ; off route
+1409299506 ; 13362 ; was it worth it
+1409300273 ; 14129 ; coming down
+1409300529 ; 14385 ; romans holiday
+1409300785 ; 14641 ; heavy toll
+1414087749 ; story complete
+
+
+tbogt
+4456497 ; 49 ; i luv lc
+4456498 ; 50 ; chinese takeout
+4456499 ; 51 ; practice swing
+4456500 ; 52 ; blog this part 1
+4456501 ; 53 ; boulevard baby
+4456502 ; 54 ; blog this part 2
+4456503 ; 55 ; bang bang
+4456504 ; 56 ; frosting on the cake
+4456505 ; 57 ; not so fast
+1409298481 ; 12337 ; ladies night
+1409298482 ; 12338 ; for the man who has everything
+1409298737 ; 12593 ; ladies half price
+1409298738 ; 12594 ; corner kids
+1409298994 ; 12850 ; clocking off
+1409299249 ; 13105 ; kibbutz number one
+1409299250 ; 13106 ; mommas boy
+1409299505 ; 13361 ; this aint checkers
+1409299506 ; 13362 ; going deep
+1409299761 ; 13617 ; no 3
+1409299762 ; 13618 ; dropping in
+1409300018 ; 13874 ; in the crosshairs
+1409300273 ; 14129 ; sexy time
+1409300274 ; 14130 ; partys over
+1409300529 ; 14385 ; high dive
+1409300785 ; 14641 ; caught with your pants down
+1414087749 ; story complete
