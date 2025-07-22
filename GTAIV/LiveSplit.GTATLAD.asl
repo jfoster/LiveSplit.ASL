@@ -319,10 +319,6 @@ split {
 	// Each mission (except Story Complete) has two different LastMissionName values associated with it, both are correct.
 	//======================================================================
 	
-	if (settings["B2"] 
-		&& (current.LastMissionName == 49 && old.LastMissionName != 49 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456497 && old.LastMissionName != 4456497 && current.isLoading != 0))
-		return true;
 	if (settings["B3"] 
 		&& (current.LastMissionName == 50 && old.LastMissionName != 50 && current.isLoading != 0)
 		|| (current.LastMissionName == 4456498 && old.LastMissionName != 4456498 && current.isLoading != 0))
@@ -425,6 +421,15 @@ split {
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15) 
 		&& ((current.Xcoord < 918.23f && current.Xcoord > 910.23f) && (current.Ycoord < 1560.08f && current.Ycoord > 1552.08f)))
 		return true;
+
+	// Clean And Serene split
+	// If setting is enabled AND your progress with Billy raises from 0% AND game is not loading THEN do split.
+	// As that means one mission for Billy has been finished which would be 'Clean And Serene'
+	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
+	// LastMissionName method cannot apply here, because when you start a new game from savefile...
+	// ...the LastMissionName value carries over from savefile new game was started from.
+	// So if the new game was started from savefile that had 'Clean And Serene' finished, split would fail to happen.
+	if (settings["B2"] && (current.Billy == 16.66666794f && old.Billy == 0f && current.isLoading != 0)) return true;
 		
 	// Any% / Classic Final Split - hitting last marker at the end of 'Get Lost'
 	// If setting is enabled
