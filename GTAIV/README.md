@@ -19,9 +19,9 @@ LiveSplit Autosplitter for Grand Theft Auto IV and Episodes from Liberty City
 | :------: | :--------------------------------------: | :--------: |
 | 1.2.0.59 |         Complete Edition (current)       |    Yes     |
 | 1.2.0.43 |         Complete Edition (until 2023)    |    Yes     |
-| 1.2.0.32 |         Complete Edition (original)      |    Yes     |
-| 1.0.8.0  |                 Patch 8                  |    Yes     |
-| 1.0.7.0  |                 Patch 7                  |    Yes     |
+| 1.2.0.32 |         Complete Edition (original)      |     No     |
+| 1.0.8.0  |                 Patch 8                  |     No     |
+| 1.0.7.0  |                 Patch 7                  |     No     |
 | 1.0.6.0  |                 Patch 6                  |     No     |
 | 1.0.0.4  |                 Patch 5                  |     No     |
 | 1.0.4.0  |                 Patch 4                  |    Yes     |
