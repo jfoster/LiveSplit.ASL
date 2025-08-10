@@ -13,6 +13,11 @@
 // MissionsAttempted: amount of attempted story missions
 // ScreenFade: 0 if not fading, 15 if fading. Opening esc menu fade does _not_ fall under it.
 // onMission: is player on a mission flag. 0 if false, 1 if true
+// VideoEditor (CE only): 0 in gameplay, 256 in video editor,
+// VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor,
+// LastMenuFade (CE only): length in milliseconds of last menu screen fade that occured. In other words: in gameplay shows 800/1000 and in menus 0/1/5/400. Shows 0 from new game, until menu is opened for first time.
+// isMenuOpen (CE only): 0 in game, 1 in menus, 1 in video editor, 1 during vid warp freeze.
+// isGameplayVisible (CE only): 1 in game, 0/1 in menus, 0 in video editor, 1 during vid warp freeze.
 // Xcoord, Ycoord, Zcoord are player coordinates. Zcoords are commented out as there's no use for them in autosplitting.
 // Characters names are their respective mission progress percentage.
 
@@ -26,6 +31,10 @@ state("GTAIV", "1.2.0.59") {
 	int MissionsAttempted : 0xEB79D0;
 	int ScreenFade : 0xC39294;
 	int onMission : 0x1266C80;
+	int VideoEditor : 0xD60C3C;
+	int LastMenuFade : 0xD61520;
+	int isMenuOpen : 0xD73590;
+	int isGameplayVisible : 0xC3E428;
 	float Xcoord : 0x124BA70;
 	float Ycoord : 0x124BA74;
 	//float Zcoord : 0x124BA78;
@@ -47,6 +56,10 @@ state("GTAIV", "1.2.0.43") {
 	int MissionsAttempted : 0xEB79D0;
 	int ScreenFade : 0xC39294;
 	int onMission : 0x1266C80;
+	int VideoEditor : 0xD60C3C;
+	int LastMenuFade : 0xD61520;
+	int isMenuOpen : 0xD73590;
+	int isGameplayVisible : 0xC3E428;
 	float Xcoord : 0x124BA70;
 	float Ycoord : 0x124BA74;
 	//float Zcoord : 0x124BA78;
@@ -68,6 +81,7 @@ state("EFLC", "1.1.2.0") {
 	int MissionsAttempted : 0xDA58B8;
 	int ScreenFade : 0xB17A44;
 	int onMission : 0x11E80E8;
+	int VideoEditor : 0xD6E428;
 	float Xcoord : 0x12462F0;
 	float Ycoord : 0x12462F4;
 	//float Zcoord : 0x12462F8;
@@ -688,6 +702,19 @@ isLoading {
 
 	// this needs to be true to enable gameTime
 	if (settings["gameTime"]) return true;
+
+	// stop the loadless timer when the game freezes while doing video editor warp
+	if (current.VideoEditor == 256) {
+		if (vars.enabled && vars.correctEpisode) {
+			if (vars.isCE) {
+				if ((current.LastMenuFade >= 800 || current.LastMenuFade == 0) && current.isGameplayVisible == 1 && current.isMenuOpen == 1) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+	}
 
 	return current.isLoading == 0;
 }
