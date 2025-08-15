@@ -443,7 +443,7 @@ split {
 	// LastMissionName method cannot apply here, because when you start a new game from savefile...
 	// ...the LastMissionName value carries over from savefile new game was started from.
 	// So if the new game was started from savefile that had 'Clean And Serene' finished, split would fail to happen.
-	if (settings["B2"] && (current.Billy == 16.66666794f && old.Billy == 0f && current.isLoading != 0)) return true;
+	if (settings["B2"] && (current.Billy > 14f && old.Billy == 0f && current.isLoading != 0)) return true;
 		
 	// Any% / Classic Final Split - hitting last marker at the end of 'Get Lost'
 	// If setting is enabled
@@ -477,140 +477,140 @@ split {
 	
 	// for all Billy's missions: {-1718.45900000, 361.44560000, 24.39980000}
 	if (settings["B33"] 
-		&& (current.Billy == 16.66666794f)
+		&& ((current.Billy > 14f && current.Billy < 18f)
 		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	if (settings["B44"]
-		&& (current.Billy == 33.33333588f)
+		&& ((current.Billy > 31f && current.Billy < 35f)
 		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	if (settings["B55"]
-		&& (current.Billy == 50f)
+		&& ((current.Billy == 50f)
 		&& ((current.Xcoord > -1722.45 && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;// Action/Reaction
 	// 66.67% now Buyer's Market should've happen, but this mission is moved to Elizabeta
 	if (settings["B66"]
-		&& (current.Billy == 83.33332825f)
+		&& ((current.Billy > 81f && current.Billy < 85f)
 		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true; // This Shit's Cursed
 		
 	// {-1837.80200000, 281.17250000, 21.95570000}
 	if (settings["J11"]
-		&& (current.Jim == 0f)
+		&& ((current.Jim == 0f)
 		&& ((current.Xcoord > -1841.8f && current.Xcoord < -1834.8f) && (current.Ycoord > 277.17f && current.Ycoord < 287.17f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-1632.97400000, 794.95300000, 28.76430000}
 	if (settings["J22"]
-		&& (current.Jim == 20f)
+		&& ((current.Jim == 20f)
 		&& ((current.Xcoord > -1636.97f && current.Xcoord < -1628.97f) && (current.Ycoord > 790.95f && current.Ycoord < 798.95f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-338.90340000, 1601.72000000, 19.42150000}
 	if (settings["J33"]
-		&& (current.Jim == 40f)
+		&& ((current.Jim == 40f)
 		&& ((current.Xcoord > -342.9f && current.Xcoord < -334.9f) && (current.Ycoord > 1557.72f && current.Ycoord < 1605.72f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-1460.73000000, 817.10820000, 18.56550000}
 	if (settings["J44"]
-		&& (current.Jim == 60.00000381f)
+		&& ((current.Jim > 58f && current.Jim < 62f)
 		&& ((current.Xcoord > -1464.73f && current.Xcoord < -1456.73f) && (current.Ycoord > 813.1f && current.Ycoord < 821.10f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-1110.09500000, 1317.83100000, 23.43190000} 
 	if (settings["J55"]
-		&& (current.Jim == 80f)
+		&& ((current.Jim == 80f)
 		&& ((current.Xcoord > -1114.09f && current.Xcoord < -1106.09f) && (current.Ycoord > 1313.83f && current.Ycoord < 1321.83f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	
     // for all Elizabeta's missions: {362.82160000, 1504.80200000, 15.97050000}
 	if (settings["E11"]
-		&& (current.Billy == 66.66667175f)
+		&& ((current.Billy > 64f && current.Billy < 68f)
 		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true; // Buyer's Market
 	if (settings["E22"]
-		&& (current.Elizabeta == 0f)
+		&& ((current.Elizabeta == 0f)
 		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true; // Heavy Toll
 	if (settings["E33"]
-		&& (current.Elizabeta == 33.33333588f)
+		&& ((current.Elizabeta > 31f && current.Elizabeta < 35f)
 		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	if (settings["E44"]
-		&& (current.Elizabeta == 66.66667175f)
+		&& ((current.Elizabeta > 64f && current.Elizabeta < 68f)
 		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	
 	// {-35.08080000, 764.47520000, 13.71320000}
 	if (settings["S11"]
-		&& (current.Stubbs == 0f)
+		&& ((current.Stubbs == 0f)
 		&& ((current.Xcoord > -39.08f && current.Xcoord < -31.08f) && (current.Ycoord > 760.47f && current.Ycoord < 768.47f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	// {-35.08080000, 764.47520000, 13.71320000}
 	if (settings["S22"]
-		&& (current.Stubbs == 33.33333588f)
+		&& ((current.Stubbs > 31f && current.Stubbs < 35f)
 		&& ((current.Xcoord > -39.08f && current.Xcoord < -31.08f) && (current.Ycoord > 760.47f && current.Ycoord < 768.47f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	// {-1718.45900000, 361.44560000, 24.39980000}
 	if (settings["S33"]
-		&& (current.Stubbs == 66.66667175f)
+		&& ((current.Stubbs > 64f && current.Stubbs < 68f)
 		&& ((current.Xcoord > -1722.45 && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-1469.90200000, 490.41190000, 18.56540000}
 	if (settings["A22"]
-		&& (current.Ashley == 50f)
+		&& ((current.Ashley == 50f)
 		&& ((current.Xcoord > -1473.9f && current.Xcoord < -1465.9f) && (current.Ycoord > 486.41f && current.Ycoord < 494.41f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 		
 	// {-123.63790000, -256.57810000, 11.68540000}
 	if (settings["R11"]
-		&& (current.Ray == 0f)
+		&& ((current.Ray == 0f)
 		&& ((current.Xcoord > -127.63f && current.Xcoord < -119.63f) && (current.Ycoord > -260.57f && current.Ycoord < -252.57f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	// {-123.63790000, -256.57810000, 11.68540000}
 	if (settings["R33"]
-		&& (current.Ray == 66.66667175f)
+		&& ((current.Ray > 64f && current.Ray < 68f)
 		&& ((current.Xcoord > -127.63f && current.Xcoord < -119.63f) && (current.Ycoord > -260.57f && current.Ycoord < -252.57f))
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0))
+		&& (current.onMission == 0)))
 		return true;
 	
 	// Exceptions
@@ -621,18 +621,18 @@ split {
 	// This mission is unlocked after finishing Politics
 	// If setting is enabled
 	// 		AND mission progress with Ashley is at less than 49% (which is at 0%, while starting Coming Down)...
-	//		...alongside progress with Stubbs being more or equal 33.34%... 
-	//		...which means at least one mission with him has been finished and that would be Politics
+	//		...alongside progress with Stubbs being at more than 31%... 
+	//		...which means at least one mission with him has been finished and that would be Politics (33.34% after finishing it)
 	//		AND onMission flag changes to 1 
 	// 		AND current missions attempted value changes (this check assures that story mission has been started, not stuff like bike thefts etc.)
 	// 		AND game is not loading (this check prevents splitting when replaying a mission after failing):
 	// That means some kind of mission has been started somewhere...
 	// ...and under such restricted circumstances only possible story mission to start would be Coming Down.
 	if (settings["A11"]
-		&& (current.Ashley < 49f && current.Stubbs >= 33.33333588f)
+		&& ((current.Ashley < 49f && current.Stubbs > 31f)
 		&& (current.onMission == 1 && old.onMission == 0)
 		&& (current.MissionsAttempted != old.MissionsAttempted)
-		&& (current.isLoading != 0))
+		&& (current.isLoading != 0)))
 		return true;
 		
 	// Collector's Item start split
@@ -647,10 +647,10 @@ split {
 	// That means some kind of mission has been started somewhere...
 	// ...and under such restricted circumstances only possible story mission to start would be Collector's Item.
 	if (settings["R22"]
-		&& (current.Ray == 33.33333588f && current.Ashley == 100f)
+		&& (((current.Ray > 31f && current.Ray < 35f) && current.Ashley == 100f)
 		&& (current.onMission == 1 && old.onMission == 0)
 		&& (current.MissionsAttempted != old.MissionsAttempted)
-		&& (current.isLoading != 0))
+		&& (current.isLoading != 0)))
 		return true;
 		
 		
