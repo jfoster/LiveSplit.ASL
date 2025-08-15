@@ -458,429 +458,155 @@ split {
 	// =====================================================================
 	// Split on Mission End
 	// =====================================================================
-	// If setting is enabled AND the mission associated with this settings is finished AND mission passed amount increases by 1 THEN do split
+	// If setting is enabled AND specified character mission progress raises to a certain threshold AND game is not loading THEN do split.
+	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
+	// =====================================================================
 	
 	var mp = vars.memoryWatchers["iMissionsPassed"];
 	
-	// The Cousins Bellic - percentage and mission passed value are changing earlier than LastMissionName value
-	if (settings["ROM1"] && (current.LastMissionName == 3235661 && old.LastMissionName != 3235661 && current.isLoading != 0)) return true;
-	
-	if (settings["ROM2"] 
-		&& ((current.LastMissionName == 3301197 && old.LastMissionName != 3301197) 
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["ROM3"] 
-		&& ((current.LastMissionName == 3366733 && old.LastMissionName != 3366733) 
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
+	if (settings["ROM2"] && (current.Roman > 11f && old.Roman < 8f && current.isLoading != 0)) return true;
+	if (settings["ROM3"] && (current.Roman > 18f && old.Roman < 15f && current.isLoading != 0)) return true;
+	if (settings["ROM4"] && (current.Roman > 24f && old.Roman < 22f && current.isLoading != 0)) return true;
+	if (settings["ROM5"] && (current.Roman > 31f && old.Roman < 28f && current.isLoading != 0)) return true;
+	if (settings["ROM6"] && (current.Roman > 38f && old.Roman < 35f && current.isLoading != 0)) return true;
+	if (settings["ROM7"] && (current.Roman > 44f && old.Roman < 42f && current.isLoading != 0)) return true;
+	if (settings["ROM8"] && (current.Faustin > 13f && old.Faustin < 2f && current.isLoading != 0)) return true; // Crime and Punishment
+	if (settings["ROM9"] && (current.Roman > 51f && old.Roman < 48f && current.isLoading != 0)) return true;
+	if (settings["ROM10"] && (current.Roman > 58f && old.Roman < 55f && current.isLoading != 0)) return true;
+	if (settings["ROM11"] && (current.Roman > 64f && old.Roman < 62f && current.isLoading != 0)) return true;
+	if (settings["ROM12"] && (current.Roman > 71f && old.Roman < 68f && current.isLoading != 0)) return true;
+	if (settings["ROM13"] && (current.Roman > 78f && old.Roman < 75f && current.isLoading != 0)) return true;
 		
-	// Bleed Out
-	if (settings["ROM4"] 
-		&& (((current.LastMissionName == 3432269 && old.LastMissionName != 3432269) && (mp.Current == mp.Old + 1))
-		|| ((current.Roman == 26.66666794f && old.Roman == 20f) && (mp.Current == mp.Old + 1))))
-		return true;
+	if (settings["FD"] && (current.Michelle > 4f && old.Michelle < 2f && current.isLoading != 0)) return true; // 60% after First Date
+	
+	if (settings["VL1"] && (current.Vlad > 23f && old.Vlad < 2f && current.isLoading != 0)) return true;
+	if (settings["VL2"] && (current.Vlad > 48f && old.Vlad < 27f && current.isLoading != 0)) return true;
+	if (settings["VL3"] && (current.Vlad > 73f && old.Vlad < 52f && current.isLoading != 0)) return true;
+	if (settings["VL4"] && (current.Vlad > 98f && old.Vlad < 77f && current.isLoading != 0)) return true;
+	
+	if (settings["LJ1"] && (current.Jacob > 48f && old.Jacob < 2f && current.isLoading != 0)) return true;
+	if (settings["LJ2"] && (current.Jacob > 98f && old.Jacob < 77f && current.isLoading != 0)) return true;
+	
+	if (settings["FA1"] && (current.Faustin > 26f && old.Faustin < 16f && current.isLoading != 0)) return true;
+	if (settings["FA2"] && (current.Faustin > 40f && old.Faustin < 30f && current.isLoading != 0)) return true;
+	if (settings["FA3"] && (current.Faustin > 55f && old.Faustin < 44f && current.isLoading != 0)) return true;
+	if (settings["FA4"] && (current.Faustin > 69f && old.Faustin < 59f && current.isLoading != 0)) return true;
+	
+	if (settings["DR1"] && (current.Faustin > 83f && old.Faustin < 73f && current.isLoading != 0)) return true;
+	if (settings["DR2"] && (current.Faustin > 98f && old.Faustin < 87f && current.isLoading != 0)) return true;
 		
-	if (settings["ROM5"]
-		&& ((current.LastMissionName == 3497805 && old.LastMissionName != 3497805)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["ROM6"]
-		&& ((current.LastMissionName == 3563341 && old.LastMissionName != 3563341)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM7"] 
-		&& ((current.LastMissionName == 3628877 && old.LastMissionName != 3628877)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM8"] 
-		&& ((current.LastMissionName == 842161997 && old.LastMissionName != 842161997)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM9"] 
-		&& ((current.LastMissionName == 3759949 && old.LastMissionName != 3759949)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM10"] 
-		&& ((current.LastMissionName == 825319245 && old.LastMissionName != 825319245)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM11"] 
-		&& ((current.LastMissionName == 842096461 && old.LastMissionName != 842096461)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM12"] 
-		&& ((current.LastMissionName == 858873677 && old.LastMissionName != 858873677)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ROM13"] 
-		&& ((current.LastMissionName == 875650893 && old.LastMissionName != 875650893)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
+	if (settings["BK1"] && (current.Brucie > 23f && old.Brucie < 2f && current.isLoading != 0)) return true;
+	if (settings["BK2"] && (current.Brucie > 48f && old.Brucie < 27f && current.isLoading != 0)) return true;
+	//if (settings["BK3"] //out of the closet 1
+	if (settings["BK4"] && (current.Brucie > 73f && old.Brucie < 52f && current.isLoading != 0)) return true;
+	if (settings["BK5"] && (current.Brucie > 98f && old.Brucie < 77f && current.isLoading != 0)) return true;
 	
-	if (settings["FD"] 
-		&& ((current.LastMissionName == 909729613 && old.LastMissionName != 909729613)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["VL1"] 
-		&& ((current.LastMissionName == 892428109 && old.LastMissionName != 892428109)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["VL2"] 
-		&& ((current.LastMissionName == 909205325 && old.LastMissionName != 909205325)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["VL3"] 
-		&& ((current.LastMissionName == 925982541 && old.LastMissionName != 925982541)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["VL4"] 
-		&& ((current.LastMissionName == 942759757 && old.LastMissionName != 942759757)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["LJ1"] 
-		&& ((current.LastMissionName == 959536973 && old.LastMissionName != 959536973)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["LJ2"]
-		&& ((current.LastMissionName == 808607565 && old.LastMissionName != 808607565)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["FA1"] 
-		&& ((current.LastMissionName == 858939213 && old.LastMissionName != 858939213)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FA2"]
-		&& ((current.LastMissionName == 875716429 && old.LastMissionName != 875716429)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["FA3"]
-		&& ((current.LastMissionName == 892493645 && old.LastMissionName != 892493645)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FA4"] 
-		&& ((current.LastMissionName == 909270861 && old.LastMissionName != 909270861)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["BK1"]
-		&& ((current.LastMissionName == 942890829 && old.LastMissionName != 942890829)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["BK2"]
-		&& ((current.LastMissionName == 959668045 && old.LastMissionName != 959668045)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["BK3"]
-		&& ((current.LastMissionName == 808738637 && old.LastMissionName != 808738637)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["BK4"]
-		&& ((current.LastMissionName == 825515853 && old.LastMissionName != 825515853)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["BK5"]
-		&& ((current.LastMissionName == 842293069 && old.LastMissionName != 842293069)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-		
-	// Master & Molotov
-	if (settings["DR1"]
-		&& (((current.LastMissionName == 926048077 && old.LastMissionName != 926048077) && (mp.Current == mp.Old + 1))
-		|| ((current.Faustin == 85.7142868f && old.Faustin == 71.42857361f) && (mp.Current == mp.Old + 1))))
-		return true;
-		
-	if (settings["DR2"] 
-		&& ((current.LastMissionName == 942825293 && old.LastMissionName != 942825293)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["FM1"] 
-		&& ((current.LastMissionName == 926179149 && old.LastMissionName != 926179149)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FM2"] 
-		&& ((current.LastMissionName == 942956365 && old.LastMissionName != 942956365)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FM3"] 
-		&& ((current.LastMissionName == 959733581 && old.LastMissionName != 959733581)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FM4"] 
-		&& ((current.LastMissionName == 808804173 && old.LastMissionName != 808804173)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["FM5"]
-		&& ((current.LastMissionName == 825581389 && old.LastMissionName != 825581389)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["FM6"] 
-		&& ((current.LastMissionName == 842358605 && old.LastMissionName != 842358605)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["FM7"] 
-		&& ((current.LastMissionName == 859135821 && old.LastMissionName != 859135821)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	
-	if (settings["PM1"]
-		&& ((current.LastMissionName == 943021901 && old.LastMissionName != 943021901)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["PM2"] 
-		&& ((current.LastMissionName == 959799117 && old.LastMissionName != 959799117)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PM3"] 
-		&& ((current.LastMissionName == 808869709 && old.LastMissionName != 808869709)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["MN1"] 
-		&& ((current.LastMissionName == 959602509 && old.LastMissionName != 959602509)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["MN2"]
-		&& ((current.LastMissionName == 808673101 && old.LastMissionName != 808673101)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["MN3"] 
-		&& ((current.LastMissionName == 825450317 && old.LastMissionName != 825450317)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	
-	if (settings["EL1"] 
-		&& ((current.LastMissionName == 842227533 && old.LastMissionName != 842227533)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["EL2"] 
-		&& ((current.LastMissionName == 859004749 && old.LastMissionName != 859004749)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["EL3"] 
-		&& ((current.LastMissionName == 875781965 && old.LastMissionName != 875781965) 
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["EL4"] 
-		&& ((current.LastMissionName == 892559181 && old.LastMissionName != 892559181)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["DM1"] 
-		&& ((current.LastMissionName == 859266893 && old.LastMissionName != 859266893)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["DM2"]
-		&& ((current.LastMissionName == 876044109 && old.LastMissionName != 876044109)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["DM3"] 
-		&& ((current.LastMissionName == 892821325 && old.LastMissionName != 892821325)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["GM1"] 
-		&& ((current.LastMissionName == 926310221 && old.LastMissionName != 926310221)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["GM2"] 
-		&& ((current.LastMissionName == 943087437 && old.LastMissionName != 943087437)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["GM3"] 
-		&& ((current.LastMissionName == 959864653 && old.LastMissionName != 959864653)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["GM4"] 
-		&& ((current.LastMissionName == 808935245 && old.LastMissionName != 808935245)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	//if (settings["GM5"]  // ransom, not a mission
-	if (settings["GM6"]
-		&& ((current.LastMissionName == 825712461 && old.LastMissionName != 825712461)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["GM7"] 
-		&& ((current.LastMissionName == 842489677 && old.LastMissionName != 842489677)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["ULP1"]
-		&& ((current.LastMissionName == 875913037 && old.LastMissionName != 875913037)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["ULP2"] 
-		&& ((current.LastMissionName == 892690253 && old.LastMissionName != 892690253)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-		
-	// Dust Off
-	if (settings["ULP3"] 
-		&& (((current.LastMissionName == 909467469 && old.LastMissionName != 909467469) && (mp.Current == mp.Old + 1))
-		|| ((current.ULP == 75f && old.ULP == 50f) && (mp.Current == mp.Old + 1))))
-		return true;
-		
-	if (settings["ULP4"] 
-		&& ((current.LastMissionName == 926244685 && old.LastMissionName != 926244685)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	
-	if (settings["BC1"]
-		&& ((current.LastMissionName == 909598541 && old.LastMissionName != 909598541)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["BC2"] 
-		&& ((current.LastMissionName == 926375757 && old.LastMissionName != 926375757)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["BC3"] 
-		&& ((current.LastMissionName == 943152973 && old.LastMissionName != 943152973)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	
-	if (settings["GG1"]
-		&& ((current.LastMissionName == 943218509 && old.LastMissionName != 943218509)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["GG2"]
-		&& ((current.LastMissionName == 959995725 && old.LastMissionName != 959995725)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["GG3"]
-		&& ((current.LastMissionName == 809066317 && old.LastMissionName != 809066317)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
+	if (settings["FM1"] && (current.Francis > 14f && old.Francis < 2f && current.isLoading != 0)) return true;
+	//if (settings["FM2"] //final interview 1
+	if (settings["FM3"] && (current.Francis > 31f && old.Francis < 18f && current.isLoading != 0)) return true;
+	if (settings["FM4"] && (current.Francis > 48f && old.Francis < 35f && current.isLoading != 0)) return true;
+	if (settings["FM5"] && (current.Francis > 64f  && old.Francis < 52f && current.isLoading != 0)) return true;
+	if (settings["FM6"] && (current.Francis > 81f && old.Francis < 68f && current.isLoading != 0)) return true;
+	if (settings["FM7"] && (current.Francis > 98f && old.Francis < 85f && current.isLoading != 0)) return true;
 
-	if (settings["PX1"]
-		&& ((current.LastMissionName == 892624717 && old.LastMissionName != 892624717)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PX2"] 
-		&& ((current.LastMissionName == 875847501 && old.LastMissionName != 875847501)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PX3"]
-		&& ((current.LastMissionName == 1127231811 && old.LastMissionName != 1127231811)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PX4"]
-		&& ((current.LastMissionName == 909401933 && old.LastMissionName != 909401933)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
+	if (settings["PM1"] && (current.Packie > 31f && old.Packie < 2f && current.isLoading != 0)) return true;
+	if (settings["PM2"] && (current.Packie > 64f && old.Packie < 35f && current.isLoading != 0)) return true;
+	if (settings["PM3"] && (current.Packie > 98f && old.Packie < 68f && current.isLoading != 0)) return true;
 	
-	if (settings["DW1"] 
-		&& ((current.LastMissionName == 909336397 && old.LastMissionName != 926113613)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["DW2"]
-		&& ((current.LastMissionName == 926113613 && old.LastMissionName != 926113613)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
+	if (settings["MN1"] && (current.Manny > 31f && old.Manny < 2f && current.isLoading != 0)) return true;
+	if (settings["MN2"] && (current.Manny > 64f && old.Manny < 35f && current.isLoading != 0)) return true;
+	if (settings["MN3"] && (current.Manny > 98f && old.Manny < 68f && current.isLoading != 0)) return true;
 	
-	if (settings["JP1"]
-		&& ((current.LastMissionName == 876109645 && old.LastMissionName != 876109645)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["JP2"]
-		&& ((current.LastMissionName == 892886861 && old.LastMissionName != 892886861)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["JP3"]
-		&& ((current.LastMissionName == 909664077 && old.LastMissionName != 909664077)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["JP4"] 
-		&& ((current.LastMissionName == 1127494211 && old.LastMissionName != 1127494211)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["JP5"]
-		&& ((current.LastMissionName == 926441293 && old.LastMissionName != 926441293)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
+	if (settings["EL1"] && (current.Elizabeta > 23f && old.Elizabeta < 2f && current.isLoading != 0)) return true;
+	if (settings["EL2"] && (current.Elizabeta > 48f && old.Elizabeta < 27f && current.isLoading != 0)) return true;
+	if (settings["EL3"] && (current.Elizabeta > 73f && old.Elizabeta < 52f && current.isLoading != 0)) return true;
+	if (settings["EL4"] && (current.Elizabeta > 98f && old.Elizabeta < 77f && current.isLoading != 0)) return true;
 	
-	if (settings["PB1"]
-		&& ((current.LastMissionName == 842555213 && old.LastMissionName != 842555213)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PB2"]
-		&& ((current.LastMissionName == 959930189 && old.LastMissionName != 959930189)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["PB3"] 
-		&& ((current.LastMissionName == 825777997 && old.LastMissionName != 825777997)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["PB4"] 
-		&& ((current.LastMissionName == 859332429 && old.LastMissionName != 859332429)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
+	if (settings["DM1"] && (current.Derrick > 31f && old.Derrick < 2f && current.isLoading != 0)) return true;
+	if (settings["DM2"] && (current.Derrick > 64f && old.Derrick < 35f && current.isLoading != 0)) return true;
+	if (settings["DM3"] && (current.Derrick > 98f && old.Derrick < 68f && current.isLoading != 0)) return true;
+
+	if (settings["GM1"] && (current.Gerry > 18f && old.Gerry < 2f && current.isLoading != 0)) return true;
+	if (settings["GM2"] && (current.Gerry > 38f && old.Gerry < 22f && current.isLoading != 0)) return true;
+	//if (settings["GM3"] // ill take her 1
+	if (settings["GM4"] && (current.Gerry > 58f && old.Gerry < 42f && current.isLoading != 0)) return true;
+	//if (settings["GM5"] // ransom, not a mission
+	if (settings["GM6"] && (current.Gerry > 78f && old.Gerry < 62f && current.isLoading != 0)) return true;
+	if (settings["GM7"] && (current.Gerry > 98f && old.Gerry < 82f && current.isLoading != 0)) return true;
 	
-	if (settings["RB1"]
-		&& ((current.LastMissionName == 825646925 && old.LastMissionName != 825646925)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["RB2"]
-		&& ((current.LastMissionName == 842424141 && old.LastMissionName != 842424141)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["RB3"]
-		&& ((current.LastMissionName == 859201357 && old.LastMissionName != 859201357)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["RB4"]
-		&& ((current.LastMissionName == 875978573 && old.LastMissionName != 875978573)
-		&& (mp.Current == mp.Old + 1)))
-		return true;
-	if (settings["RB5"]
-		&& ((current.LastMissionName == 892755789 && old.LastMissionName != 892755789)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-	if (settings["RB6"]
-		&& ((current.LastMissionName == 909533005 && old.LastMissionName != 909533005)
-		&& (mp.Current == mp.Old + 1))) 
-		return true;
-		
-	if (settings["FIN1"] 
-		&& ((current.LastMissionName == 1229140294 && old.LastMissionName != 1229140294)
-		&& (mp.Current == mp.Old + 1)))
-		return true; // one last thing
-	if (settings["FIN2"] 
-		&& (((current.LastMissionName == 825843533 && old.LastMissionName != 825843533) && (mp.Current == mp.Old + 1)) 
-		|| ((current.LastMissionName == 842620749 && old.LastMissionName != 842620749) && (mp.Current == mp.Old + 1))))
-		return true; // if the price is right || a dish served cold
-		
-	// Exception - Mr. & Mrs. Bellic - this mission doesn't have LastMissionName value and percentage doesn't increase
+	if (settings["ULP1"] && (current.ULP > 23f && old.ULP < 2f && current.isLoading != 0)) return true;
+	if (settings["ULP2"] && (current.ULP > 48f && old.ULP < 27f && current.isLoading != 0)) return true;
+	if (settings["ULP3"] && (current.ULP > 73f && old.ULP < 52f && current.isLoading != 0)) return true;
+	if (settings["ULP4"] && (current.ULP > 98f && old.ULP < 77f && current.isLoading != 0)) return true;
+	
+	if (settings["BC1"] && (current.Bernie > 31f && old.Bernie < 2f && current.isLoading != 0)) return true;
+	if (settings["BC2"] && (current.Bernie > 64f && old.Bernie < 35f && current.isLoading != 0)) return true;
+	if (settings["BC3"] && (current.Bernie > 98f && old.Bernie < 68f && current.isLoading != 0)) return true;
+	
+	if (settings["GG1"] && (current.Gravelli > 31f && old.Gravelli < 2f && current.isLoading != 0)) return true;
+	if (settings["GG2"] && (current.Gravelli > 64f && old.Gravelli < 35f && current.isLoading != 0)) return true;
+	if (settings["GG3"] && (current.Gravelli > 98f && old.Gravelli < 68f && current.isLoading != 0)) return true;
+
+	if (settings["PX1"] && (current.Playboy > 31f && old.Playboy < 2f && current.isLoading != 0)) return true;
+	if (settings["PX2"] && (current.Playboy > 64f && old.Playboy < 35f && current.isLoading != 0)) return true;
+	//if (settings["PX3"] //holland play 1
+	if (settings["PX4"] && (current.Playboy > 98f && old.Playboy < 68f && current.isLoading != 0)) return true;
+	
+	if (settings["DW1"] && (current.Dwayne > 48f && old.Dwayne < 2f && current.isLoading != 0)) return true;
+	if (settings["DW2"] && (current.Dwayne > 98f && old.Dwayne < 52f && current.isLoading != 0)) return true;
+	
+	if (settings["JP1"] && (current.Pegorino > 23f && old.Pegorino < 2f && current.isLoading != 0)) return true;
+	if (settings["JP2"] && (current.Pegorino > 48f && old.Pegorino < 27f && current.isLoading != 0)) return true;
+	if (settings["JP3"] && (current.Pegorino > 73f && old.Pegorino < 52f && current.isLoading != 0)) return true;
+	//if (settings["JP4"] //pest control 1
+	if (settings["JP5"] && (current.Pegorino > 98f && old.Pegorino < 77f && current.isLoading != 0)) return true;
+	
+	if (settings["PB1"] && (current.Bell > 23f && old.Bell < 2f && current.isLoading != 0)) return true;
+	if (settings["PB2"] && (current.Bell > 48f && old.Bell < 27f && current.isLoading != 0)) return true;
+	if (settings["PB3"] && (current.Bell > 73f && old.Bell < 52f && current.isLoading != 0)) return true;
+	if (settings["PB4"] && (current.Bell > 98f && old.Bell < 77f && current.isLoading != 0)) return true;
+	
+	if (settings["RB1"] && (current.Ray > 14f && old.Ray < 2f && current.isLoading != 0)) return true;
+	if (settings["RB2"] && (current.Ray > 31f && old.Ray < 18f && current.isLoading != 0)) return true;
+	if (settings["RB3"] && (current.Ray > 48f && old.Ray < 35f && current.isLoading != 0)) return true;
+	if (settings["RB4"] && (current.Ray > 64f && old.Ray < 52f && current.isLoading != 0)) return true;
+	if (settings["RB5"] && (current.Ray > 81f && old.Ray < 68f && current.isLoading != 0)) return true;
+	if (settings["RB6"] && (current.Ray > 98f && old.Ray < 85f && current.isLoading != 0)) return true;
+	
+	if (settings["FIN2"] && (current.Roman > 84f && old.Roman < 82f && current.isLoading != 0)) return true; // deal || revenge
+	if (settings["FIN6"] && (current.Roman > 98f && old.Roman < 95f && current.isLoading != 0)) return true; // split after credits
+	
+	// Exceptions
+	// =====================================
+
+	// Character mission progress percentage and mission passed values are changing earlier than LastMissionName value
+	if (settings["ROM1"] && (current.LastMissionName == 3235661 && old.LastMissionName != 3235661 && current.isLoading != 0)) return true;
+
+	// Character mission progress percentage for these missions do not increase, so LastMissionName values are used
+	if (settings["BK3"] && (current.LastMissionName == 808738637 && old.LastMissionName != 808738637 && current.isLoading != 0)) return true;
+	if (settings["FM2"] && (current.LastMissionName == 942956365 && old.LastMissionName != 942956365 && current.isLoading != 0)) return true;
+	if (settings["GM3"] && (current.LastMissionName == 959864653 && old.LastMissionName != 959864653 && current.isLoading != 0)) return true;
+	if (settings["PX3"] && (current.LastMissionName == 1127231811 && old.LastMissionName != 1127231811 && current.isLoading != 0)) return true;
+	if (settings["JP4"] && (current.LastMissionName == 1127494211 && old.LastMissionName != 1127494211 && current.isLoading != 0)) return true;
+	if (settings["FIN1"] && (current.LastMissionName == 1229140294 && old.LastMissionName != 1229140294 && current.isLoading != 0)) return true; // one last thing
+	
+	//  Mr. & Mrs. Bellic - this mission doesn't have LastMissionName value and percentage doesn't increase
 	// so check if either of FIN2 values are unchanged, but mission passed value increases
 	if (settings["FIN3"] 
 		&& (((current.LastMissionName == 825843533 && old.LastMissionName == 825843533) && (mp.Current == mp.Old + 1)) 
 		|| ((current.LastMissionName == 842620749 && old.LastMissionName == 842620749) && (mp.Current == mp.Old + 1))))
 		return true;
+		
+	if (settings["FIN4"] && (current.LastMissionName == 1179464006 && old.LastMissionName != 1179464006 && current.isLoading != 0)) return true; // in mourning
 	
-	if (settings["FIN4"] 
-		&& ((current.LastMissionName == 1179464006 && old.LastMissionName != 1179464006)
-		&& (mp.Current == mp.Old + 1)))
-		return true; // in mourning
-	
-	// Any% / Classic Final Split - first frame of final cutscene at the end of 'A Revenger's Tragedy' or 'Out of Commission'
-	// If In Mourning is finished AND cinematic cutscene starts playing AND game is not loading:
+	// Any% / Classic Final Split - first frame of last cutscene at the end of 'A Revenger's Tragedy' or 'Out of Commission'
+	// If setting is enabled AND In Mourning is finished AND cinematic cutscene starts playing AND game is not loading at the moment:
 	// That means player completed the game a.k.a. finished any% / classic speedrun
 	// It works, because after finishing In Mourning there's no other possible cutscene to play besides the final one
-	if (settings["FIN5"] 
-		&& (current.LastMissionName == 1179464006 
-		&& current.isCutsceneRunning == 8 && old.isCutsceneRunning != 8 
-		&& current.isLoading != 0)) 
-		return true;
-	
-	if (settings["FIN6"] 
-		&& ((current.LastMissionName == 1128549957 && old.LastMissionName != 1128549957) 
-		&& (mp.Current == mp.Old + 1)))
-		return true; // split after credits
-	
+	if (settings["FIN5"] && (current.LastMissionName == 1179464006 && current.isCutsceneRunning == 8 && old.isCutsceneRunning != 8 && current.isLoading != 0)) return true;
 
-	
+
+
 	// =======================================================================
 	// Miscellaneous stuff to split on
 	// =======================================================================
