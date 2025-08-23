@@ -85,12 +85,12 @@ state("EFLC", "1.1.2.0") {
 	float Xcoord : 0x12462F0;
 	float Ycoord : 0x12462F4;
 	//float Zcoord : 0x12462F8;
-	float Billy : 0xDA3DA4;
-	float Jim : 0xDA3DA8;
-	float Elizabeta : 0xDA3DBC;
-	float Stubbs : 0xDA3DB4;
-	float Ashley : 0xDA3DB8;
-	float Ray: 0xDA3DC0;
+	float Billy : 0x00DA54E4, 0xC, 0x0;
+	float Jim : 0x00DA54E8, 0xC, 0x0;
+	float Stubbs : 0x00DA54F4, 0xC, 0x0;
+	float Ashley : 0x00DA54F8, 0xC, 0x0;
+	float Elizabeta : 0x00DA54FC, 0xC, 0x0;
+	float Ray : 0x00DA5500, 0xC, 0x0;
 }
 
 startup {
@@ -328,97 +328,37 @@ split {
 	// =====================================================================
 	// Split on Mission End
 	// =====================================================================
-	// If setting is enabled AND the mission associated with this settings is finished AND game is not loading THEN do split.
+	// If setting is enabled AND specified character mission progress raises to a certain threshold AND game is not loading THEN do split.
 	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
-	// Each mission (except Story Complete) has two different LastMissionName values associated with it, both are correct.
-	//======================================================================
+	// =====================================================================
 	
-	if (settings["B3"] 
-		&& (current.LastMissionName == 50 && old.LastMissionName != 50 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456498 && old.LastMissionName != 4456498 && current.isLoading != 0))
-		return true;
-	if (settings["B4"]
-		&& (current.LastMissionName == 51 && old.LastMissionName != 51 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456499 && old.LastMissionName != 4456499 && current.isLoading != 0)) 
-		return true;
-	if (settings["B5"]
-		&& (current.LastMissionName == 52 && old.LastMissionName != 52 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456500 && old.LastMissionName != 4456500 && current.isLoading != 0))
-		return true; // Action/Reaction
-	if (settings["B6"]
-		&& (current.LastMissionName == 54 && old.LastMissionName != 54 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456502 && old.LastMissionName != 4456502 && current.isLoading != 0)) 
-		return true; // This Shit's Cursed
-		
-	if (settings["J1"] 
-		&& (current.LastMissionName == 55 && old.LastMissionName != 55 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456503 && old.LastMissionName != 4456503 && current.isLoading != 0))
-		return true;
-	if (settings["J2"]
-		&& (current.LastMissionName == 56 && old.LastMissionName != 56 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456504 && old.LastMissionName != 4456504 && current.isLoading != 0))
-		return true;
-	if (settings["J3"]
-		&& (current.LastMissionName == 12337 && old.LastMissionName != 12337 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409298481 && old.LastMissionName != 1409298481 && current.isLoading != 0))
-		return true;
-	if (settings["J4"]
-		&& (current.LastMissionName == 12593 && old.LastMissionName != 12593 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409298737 && old.LastMissionName != 1409298737 && current.isLoading != 0))
-		return true;
-	if (settings["J5"]
-		&& (current.LastMissionName == 12849 && old.LastMissionName != 12849 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409298993 && old.LastMissionName != 1409298993 && current.isLoading != 0))
-		return true;
+	if (settings["B2"] && (current.Billy > 14f && old.Billy < 2f && current.isLoading != 0)) return true;
+	if (settings["B3"] && (current.Billy > 31f && old.Billy < 18f && current.isLoading != 0)) return true;
+	if (settings["B4"] && (current.Billy > 48f && old.Billy < 35f && current.isLoading != 0)) return true;
+	if (settings["B5"] && (current.Billy > 64f && old.Billy < 52f && current.isLoading != 0)) return true;
+	if (settings["B6"] && (current.Billy > 98f && old.Billy < 85f && current.isLoading != 0)) return true;
 	
-	if (settings["E1"]
-		&& (current.LastMissionName == 53 && old.LastMissionName != 53 && current.isLoading != 0)
-		|| (current.LastMissionName == 4456501 && old.LastMissionName != 4456501 && current.isLoading != 0))
-		return true; // Buyer's Market
-	if (settings["E2"]
-		&& (current.LastMissionName == 14641 && old.LastMissionName != 14641 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409300785 && old.LastMissionName != 1409300785 && current.isLoading != 0)) 
-		return true; // Heavy Toll
-	if (settings["E3"]
-		&& (current.LastMissionName == 12338 && old.LastMissionName != 12338 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409298482 && old.LastMissionName != 1409298482 && current.isLoading != 0)) 
-		return true;
-	if (settings["E4"]
-		&& (current.LastMissionName == 12594 && old.LastMissionName != 12594 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409298738 && old.LastMissionName != 1409298738 && current.isLoading != 0))
-		return true;
+	if (settings["J1"] && (current.Jim > 18f && old.Jim < 2f && current.isLoading != 0)) return true;
+	if (settings["J2"] && (current.Jim > 38f && old.Jim < 22f && current.isLoading != 0)) return true;
+	if (settings["J3"] && (current.Jim > 58f && old.Jim < 42f && current.isLoading != 0)) return true;
+	if (settings["J4"] && (current.Jim > 78f && old.Jim < 62f && current.isLoading != 0)) return true;
+	if (settings["J5"] && (current.Jim > 98f && old.Jim < 82f && current.isLoading != 0)) return true;
 	
-	if (settings["S1"]
-		&& (current.LastMissionName == 13105 && old.LastMissionName != 13105 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409299249 && old.LastMissionName != 1409299249 && current.isLoading != 0)) 
-		return true;
-	if (settings["S2"]
-		&& (current.LastMissionName == 13361 && old.LastMissionName != 13361 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409299505 && old.LastMissionName != 1409299505 && current.isLoading != 0))
-		return true;
-	if (settings["S4"] && (current.LastMissionName == 1414087749 && old.LastMissionName != 1414087749 && current.isLoading != 0)) return true; // split after credits
+	if (settings["E1"] && (current.Billy > 81f && old.Billy < 68f && current.isLoading != 0)) return true; // Buyer's Market
+	if (settings["E2"] && (current.Elizabeta > 31f && old.Elizabeta < 2f && current.isLoading != 0)) return true;
+	if (settings["E3"] && (current.Elizabeta > 64f && old.Elizabeta < 35f && current.isLoading != 0)) return true;
+	if (settings["E4"] && (current.Elizabeta > 98f && old.Elizabeta < 68f && current.isLoading != 0)) return true;
 	
-	if (settings["A1"]
-		&& (current.LastMissionName == 14129 && old.LastMissionName != 14129 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409300273 && old.LastMissionName != 1409300273 && current.isLoading != 0))
-		return true;
-	if (settings["A2"]
-		&& (current.LastMissionName == 14385 && old.LastMissionName != 14385 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409300529 && old.LastMissionName != 1409300529 && current.isLoading != 0))
-		return true;
+	if (settings["S1"] && (current.Stubbs > 31f && old.Stubbs < 2f && current.isLoading != 0)) return true;
+	if (settings["S2"] && (current.Stubbs > 64f && old.Stubbs < 35f && current.isLoading != 0)) return true;
+	if (settings["S4"] && (current.Stubbs > 98f && old.Stubbs < 68f && current.isLoading != 0)) return true; // split after credits
 	
-	if (settings["R1"]
-		&& (current.LastMissionName == 12850 && old.LastMissionName != 12850 && current.isLoading != 0) 
-		|| (current.LastMissionName == 1409298994 && old.LastMissionName != 1409298994 && current.isLoading != 0)) 
-		return true;
-	if (settings["R2"]
-		&& (current.LastMissionName == 13106 && old.LastMissionName != 13106 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409299250 && old.LastMissionName != 1409299250 && current.isLoading != 0))
-		return true;
-	if (settings["R3"]
-		&& (current.LastMissionName == 13362 && old.LastMissionName != 13362 && current.isLoading != 0)
-		|| (current.LastMissionName == 1409299506 && old.LastMissionName != 1409299506 && current.isLoading != 0)) 
-		return true;
+	if (settings["A1"] && (current.Ashley > 48f && old.Ashley < 2f && current.isLoading != 0)) return true;
+	if (settings["A2"] && (current.Ashley > 98f && old.Ashley < 52f && current.isLoading != 0)) return true;
+	
+	if (settings["R1"] && (current.Ray > 31f && old.Ray < 2f && current.isLoading != 0)) return true;
+	if (settings["R2"] && (current.Ray > 64f && old.Ray < 35f && current.isLoading != 0)) return true;
+	if (settings["R3"] && (current.Ray > 98f && old.Ray < 68f && current.isLoading != 0)) return true;
 		
 	// Exceptions
 	// ====================================
@@ -435,15 +375,6 @@ split {
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15) 
 		&& ((current.Xcoord < 918.23f && current.Xcoord > 910.23f) && (current.Ycoord < 1560.08f && current.Ycoord > 1552.08f)))
 		return true;
-
-	// Clean And Serene split
-	// If setting is enabled AND your progress with Billy raises from 0% AND game is not loading THEN do split.
-	// As that means one mission for Billy has been finished which would be 'Clean And Serene'
-	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
-	// LastMissionName method cannot apply here, because when you start a new game from savefile...
-	// ...the LastMissionName value carries over from savefile new game was started from.
-	// So if the new game was started from savefile that had 'Clean And Serene' finished, split would fail to happen.
-	if (settings["B2"] && (current.Billy > 14f && old.Billy == 0f && current.isLoading != 0)) return true;
 		
 	// Any% / Classic Final Split - hitting last marker at the end of 'Get Lost'
 	// If setting is enabled
