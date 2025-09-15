@@ -12,9 +12,12 @@
 // ScreenFade: 0 if not fading, 15 if fading. Opening esc menu fade does _not_ fall under it.
 // VideoEditor (CE only): 0 in gameplay, 256 in video editor.
 // VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor.
-// LastMenuFade (CE only): length in milliseconds of last menu screen fade that occured. In other words: in gameplay shows 800/1000 and in menus 0/1/5/400. Shows 0 from new game, until menu is opened for first time.
+// LastMenuFade: length in milliseconds of last menu screen fade that occured. In other words: in gameplay shows 800/1000 and in menus 0/1/5/400. Shows 0 from new game, until menu is opened for first time.
 // isMenuOpen (CE only): 0 in game, 1 in menus, 1 in video editor, 1 during vid warp freeze.
 // isGameplayVisible (CE only): 1 in game, 0/1 in menus, 0 in video editor, 1 during vid warp freeze.
+// CellphoneSubmenus (pre-CE only): Different values depending on which cellphone submenu is currently open (messages, organizer etc.) Shows 1000 if phone is not pulled out.
+// PickedUpFromGround: Starts from 0 and goes up +1 any time something is picked up from ground (money/weapons/healthpacks). Resets back to zero after vid warping or loading a save.
+// Xcoord, Ycoord, Zcoord are player coordinates. Zcoords are commented out as there's no use for them in autosplitting.
 // Character names are their respective mission progress percentage.
 
 // current Complete Edition
@@ -28,6 +31,11 @@ state ("GTAIV", "1.2.0.59") {
 	int LastMenuFade : 0xD61520;
 	int isMenuOpen : 0xD73590;
 	int isGameplayVisible : 0xC3E428;
+	int PickedUpFromGround : 0x1215574;
+	
+	float Xcoord : 0x124BA70;
+	float Ycoord : 0x124BA74;
+	//float Zcoord : 0x124BA78;
 	
 	float Roman : 0xEB75BC;
 	float Michelle : 0xEB7640;
@@ -62,6 +70,11 @@ state ("GTAIV", "1.2.0.43") {
 	int LastMenuFade : 0xD61520;
 	int isMenuOpen : 0xD73590;
 	int isGameplayVisible : 0xC3E428;
+	int PickedUpFromGround : 0x1215574;
+	
+	float Xcoord : 0x124BA70;
+	float Ycoord : 0x124BA74;
+	//float Zcoord : 0x124BA78;
 	
 	float Roman : 0xEB75BC;
 	float Michelle : 0xEB7640;
@@ -93,6 +106,13 @@ state ("GTAIV", "1.0.4.0") {
 	int isCutsceneRunning : 0xC80EBC;
 	//int ScreenFade : 0xAA9E10; //unused for now
 	int VideoEditor : 0xBCCDE0;
+	int LastMenuFade : 0xBC40B8;
+	int CellphoneSubmenus : 0x012257A8, 0x16C;
+	int PickedUpFromGround : 0xE02684;
+	
+	float Xcoord : 0x10EE0D0;
+	float Ycoord : 0x10EE0D4;
+	//float Zcoord : 0x10EE0D8;
 	
 	float Roman : 0x00C60E7C, 0x10;
 	float Vlad : 0x00C60E80, 0x10;
@@ -119,29 +139,20 @@ state ("GTAIV", "1.0.4.0") {
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
-		{"1.2.0.59", -0x30CA98},
-		{"1.2.0.43", -0x30CA98},
-		{"1.2.0.32", -0x30CA28},  
-		{"1.0.8.0", -0x398940},
-		{"1.0.7.0", 0x0},
-		{"1.0.5.2", -0x1020},
-		{"1.0.6.0", -0xFE0},
-		{"1.0.0.4", -0x4B7BC8},
-		{"1.0.4.0", -0x563040},
+		{"1.2.0.59", 0x2565A8},
+		{"1.2.0.43", 0x2565A8},
+		{"1.0.4.0", 0x0},
 	};
 
 	vars.stats = new Dictionary<string, int> {
-		{"fGameTime", 0x011C3F60},
-		{"iMissionsPassed", 0x011C4460},
-		{"iMissionsFailed", 0x011C4464},
-		{"iMissionsAttempted", 0x011C4468},
-		{"iStuntJumps", 0x011C44A4},
-		{"iDrugJobs", 0x011C44DC},
-		{"iQUB3DHighScore", 0x011C45E8}, // 10,950 default hiscore
-		{"iMostWanted", 0x011C460C},
-		{"iVigilante", 0x011C4608},
-		{"iPigeons", 0x011C4610},
-		{"iRandomEncounters", 0x011C21C4},
+		{"fGameTime", 0xC60F20},
+		{"iMissionsPassed", 0xC61420},
+		{"iMissionsFailed", 0xC61424},
+		{"iMissionsAttempted", 0xC61428},
+		{"iPigeons", 0xC615D0},
+		{"iStuntJumps", 0xC61464},
+		{"iMostWanted", 0xC615CC},
+		{"iRacesWon", 0xC6155C},
 	};
 
 	refreshRate = 60;
@@ -296,9 +307,12 @@ startup {
 			
 	addSetting(null, "splitOnStart", "Split on Mission Start (Experimental)", "Delay splitting until starting any next story mission", false);
 	
-	addSetting(null, "iPigeons", "Pigeons", "Split upon extermination of any Flying Rat", false);
-	addSetting(null, "iStuntJumps", "Stunt Jumps", "Split upon completion of any Unique Stunt Jump", false);
-	addSetting(null, "iMostWanted", "Most Wanted", "Split upon neutralization of any Most Wanted target", false);
+	addSetting(null, "misc", "Miscellaneous", null, false);
+		addSetting("misc", "iPigeons", "Pigeons", "Split upon extermination of any Flying Rat", false);
+		addSetting("misc", "iStuntJumps", "Stunt Jumps", "Split upon completion of any Unique Stunt Jump", false);
+		addSetting("misc", "iMostWanted", "Most Wanted", "Split upon neutralization of any Most Wanted target", false);
+		addSetting("misc", "iRacesWon", "Races End", "Split upon winning any Brucie's race", false);
+		addSetting("misc", "iSweatshirt", "Sweatshirt", "Split upon collecting Sweatshirt on Happiness Island", false);
 
 	addSetting(null, "gameTime", "In-Game Time (Experimental)", "Game Timer shows IGT rather than Loadless time", false);
 	addSetting(null, "debug", "Debug", "Print debug messages to the Windows error console", false);
@@ -611,6 +625,12 @@ split {
 	// Miscellaneous stuff to split on
 	// =======================================================================
 
+	// happiness island sweatshirt
+	if (settings["iSweatshirt"] 
+		&& ((current.PickedUpFromGround == old.PickedUpFromGround + 1) 
+		&& ((current.Xcoord > -609.34f && current.Xcoord < -606.69f) && (current.Ycoord > -769.11f && current.Ycoord < -767.08f))))
+		return true;
+
 	// loop through memory watchers and if it matches an enabled setting then check if it's increased
 	foreach (var mw in vars.memoryWatchers) {
 		var key = mw.Name;
@@ -626,7 +646,7 @@ split {
 				// delay splitting for mission passed if splitOnStart is enabled
 				if (key == "iMissionsPassed" && settings["splitOnStart"]) {
 					vars.queueSplit = true;
-				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"]) {
+				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"] || settings["iRacesWon"]) {
 					return true;
 				}
 			}
@@ -669,6 +689,18 @@ isLoading {
 			} else {
 				return true;
 			}
+		}
+	}
+
+	// Pre-Complete Edition only: loadless timer must continue to run during certain loading screens in multiplayer-related scenarios. 
+	if (vars.enabled && vars.correctEpisode && !vars.isCE) {
+		// Opening and closing player model menu. 1047 is a value for whole multiplayer cellphone submenu.
+		if (current.CellphoneSubmenus == 1047) {
+			return false;
+		}
+		// "Disconnected from game session" screen (entering LAN lobby)
+		if ((current.Xcoord > -2001f && current.Xcoord < -1998f) && (current.Ycoord > -2001f && current.Ycoord < -1998f)) {
+			return false;
 		}
 	}
 
