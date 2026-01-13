@@ -9,12 +9,12 @@
 // whiteLoadingScreen: a number that isn't 0 while white screen is showing (65536), 0 on black screen
 // LastMissionName values refer to: https://github.com/jfoster/LiveSplit.ASL/blob/stable/GTAIV/LastMissionName_details
 // isCutsceneRunning: 0 if not running, 8 if running, 10 if skipped. The cinematic mo-cap cutscenes, not scripted ones with pre-made animations.
-// ScreenFade: 0 if not fading, 15 if fading. Opening esc menu fade does _not_ fall under it.
+// MenuDelay: If new game starts from title screen, it shows 400, if from an existing game/inside game menu, it shows 0.
 // VideoEditor (CE only): 0 in gameplay, 256 in video editor.
 // VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor.
-// LastMenuFade (CE only): length in milliseconds of last menu screen fade that occured. In other words: in gameplay shows 800/1000 and in menus 0/1/5/400. Shows 0 from new game, until menu is opened for first time.
-// isMenuOpen (CE only): 0 in game, 1 in menus, 1 in video editor, 1 during vid warp freeze.
-// isGameplayVisible (CE only): 1 in game, 0/1 in menus, 0 in video editor, 1 during vid warp freeze.
+// CellphoneSubmenus (pre-CE only): Different values depending on which cellphone submenu is currently open (messages, organizer etc.) Shows 1000 if phone is not pulled out.
+// PickedUpFromGround: Starts from 0 and goes up +1 any time something is picked up from ground (money/weapons/healthpacks). Resets back to zero after vid warping or loading a save.
+// Xcoord, Ycoord, Zcoord are player coordinates. Zcoords are commented out as there's no use for them in autosplitting.
 // Character names are their respective mission progress percentage.
 
 // current Complete Edition
@@ -23,12 +23,14 @@ state ("GTAIV", "1.2.0.59") {
 	uint whiteLoadingScreen : 0x017B37D0;
 	int LastMissionName : 0xEB6FA8;
 	int isCutsceneRunning : 0xE9475C;
-	//int ScreenFade : 0xC39294; //unused for now
+	int MenuDelay : 0xD61520;
 	int VideoEditor : 0xD60C3C;
-	int LastMenuFade : 0xD61520;
-	int isMenuOpen : 0xD73590;
-	int isGameplayVisible : 0xC3E428;
-	
+	int PickedUpFromGround : 0x1215574;
+
+	float Xcoord : 0x124BA70;
+	float Ycoord : 0x124BA74;
+	//float Zcoord : 0x124BA78;
+
 	float Roman : 0xEB75BC;
 	float Michelle : 0xEB7640;
 	float Vlad : 0xEB75C0;
@@ -57,12 +59,14 @@ state ("GTAIV", "1.2.0.43") {
 	uint whiteLoadingScreen : 0x017B37D0;
 	int LastMissionName : 0xEB6FA8;
 	int isCutsceneRunning : 0xE9475C;
-	//int ScreenFade : 0xC39294; //unused for now
+	int MenuDelay : 0xD61520;
 	int VideoEditor : 0xD60C3C;
-	int LastMenuFade : 0xD61520;
-	int isMenuOpen : 0xD73590;
-	int isGameplayVisible : 0xC3E428;
-	
+	int PickedUpFromGround : 0x1215574;
+
+	float Xcoord : 0x124BA70;
+	float Ycoord : 0x124BA74;
+	//float Zcoord : 0x124BA78;
+
 	float Roman : 0xEB75BC;
 	float Michelle : 0xEB7640;
 	float Vlad : 0xEB75C0;
@@ -91,57 +95,148 @@ state ("GTAIV", "1.0.4.0") {
 	uint whiteLoadingScreen : 0x01223EA8;
 	int LastMissionName : 0xC60A88;
 	int isCutsceneRunning : 0xC80EBC;
-	//int ScreenFade : 0xAA9E10; //unused for now
+	int MenuDelay : 0xBC40B8;
 	int VideoEditor : 0xBCCDE0;
-	
-	float Roman : 0x00C60E7C, 0x10;
-	float Vlad : 0x00C60E80, 0x10;
-	float Jacob : 0x00C60E8C, 0x10;
-	float Faustin : 0x00C60E90, 0x10;
-	float Manny : 0x00C60E94, 0x10;
-	float Elizabeta : 0x00C60E98, 0x10;
-	float Dwayne : 0x00C60EA4, 0x10;
-	float Brucie : 0x00C60EB0, 0x10;
-	float Playboy : 0x00C60EB4, 0x10;
-	float Francis :0x00C60EB8, 0x10;
-	float ULP : 0x00C60EBC, 0x10;
-	float Packie : 0x00C60EC8, 0x10;
-	float Ray : 0x00C60ECC, 0x10;
-	float Gerry : 0x00C60ED0, 0x10;
-	float Derrick : 0x00C60ED4, 0x10;
-	float Bernie : 0x00C60ED8, 0x10;
-	float Bell : 0x00C60EDC, 0x10;
-	float Gravelli : 0x00C60EE0, 0x10;
-	float Pegorino : 0x00C60EE4, 0x10;
-	float Michelle : 0x00C60F00, 0x10;
+	int CellphoneSubmenus : 0x012257A8, 0x16C;
+	int PickedUpFromGround : 0xE02684;
+
+	float Xcoord : 0x10EE0D0;
+	float Ycoord : 0x10EE0D4;
+	//float Zcoord : 0x10EE0D8;
+
+	float Roman : 0xC60E7C, 0x10;
+	float Vlad : 0xC60E80, 0x10;
+	float Jacob : 0xC60E8C, 0x10;
+	float Faustin : 0xC60E90, 0x10;
+	float Manny : 0xC60E94, 0x10;
+	float Elizabeta : 0xC60E98, 0x10;
+	float Dwayne : 0xC60EA4, 0x10;
+	float Brucie : 0xC60EB0, 0x10;
+	float Playboy : 0xC60EB4, 0x10;
+	float Francis :0xC60EB8, 0x10;
+	float ULP : 0xC60EBC, 0x10;
+	float Packie : 0xC60EC8, 0x10;
+	float Ray : 0xC60ECC, 0x10;
+	float Gerry : 0xC60ED0, 0x10;
+	float Derrick : 0xC60ED4, 0x10;
+	float Bernie : 0xC60ED8, 0x10;
+	float Bell : 0xC60EDC, 0x10;
+	float Gravelli : 0xC60EE0, 0x10;
+	float Pegorino : 0xC60EE4, 0x10;
+	float Michelle : 0xC60F00, 0x10;
 }
 
 startup {
 	vars.offsets = new Dictionary<string, int> {
 		// newest first
-		{"1.2.0.59", -0x30CA98},
-		{"1.2.0.43", -0x30CA98},
-		{"1.2.0.32", -0x30CA28},  
-		{"1.0.8.0", -0x398940},
-		{"1.0.7.0", 0x0},
-		{"1.0.5.2", -0x1020},
-		{"1.0.6.0", -0xFE0},
-		{"1.0.0.4", -0x4B7BC8},
-		{"1.0.4.0", -0x563040},
+		{"1.2.0.59", 0x2565A8},
+		{"1.2.0.43", 0x2565A8},
+		{"1.0.4.0", 0x0},
 	};
 
 	vars.stats = new Dictionary<string, int> {
-		{"fGameTime", 0x011C3F60},
-		{"iMissionsPassed", 0x011C4460},
-		{"iMissionsFailed", 0x011C4464},
-		{"iMissionsAttempted", 0x011C4468},
-		{"iStuntJumps", 0x011C44A4},
-		{"iDrugJobs", 0x011C44DC},
-		{"iQUB3DHighScore", 0x011C45E8}, // 10,950 default hiscore
-		{"iMostWanted", 0x011C460C},
-		{"iVigilante", 0x011C4608},
-		{"iPigeons", 0x011C4610},
-		{"iRandomEncounters", 0x011C21C4},
+		{"fGameTime", 0xC60F20},
+		{"iMissionsPassed", 0xC61420},
+		{"iMissionsFailed", 0xC61424},
+		{"iMissionsAttempted", 0xC61428},
+		{"iPigeons", 0xC615D0},
+		{"iStuntJumps", 0xC61464},
+		{"iMostWanted", 0xC615CC},
+		{"iRacesWon", 0xC6155C},
+	};
+
+	vars.missEnd = new Dictionary<string, int> {
+		{"ROM1", 3235661},
+		{"ROM2", 3301197},
+		{"ROM3", 3366733},
+		{"ROM4", 3432269},
+		{"ROM5", 3497805},
+		{"ROM6", 3563341},
+		{"ROM7", 3628877},
+		{"ROM8", 842161997},
+		{"ROM9", 3759949},
+		{"ROM10", 825319245},
+		{"ROM11", 842096461},
+		{"ROM12", 858873677},
+		{"ROM13", 875650893},
+		{"FD", 909729613},
+		{"VL1", 892428109},
+		{"VL2", 909205325},
+		{"VL3", 925982541},
+		{"VL4", 942759757},
+		{"LJ1", 959536973},
+		{"LJ2", 808607565},
+		{"FA1", 858939213},
+		{"FA2", 875716429},
+		{"FA3", 892493645},
+		{"FA4", 909270861},
+		{"BK1", 942890829},
+		{"BK2", 959668045},
+		{"BK3", 808738637},
+		{"BK4", 825515853},
+		{"BK5", 842293069},
+		{"DR1", 926048077},
+		{"DR2", 942825293},
+		{"FM1", 926179149},
+		{"FM2", 942956365},
+		{"FM3", 959733581},
+		{"FM4", 808804173},
+		{"FM5", 825581389},
+		{"FM6", 842358605},
+		{"FM7", 859135821},
+		{"PM1", 943021901},
+		{"PM2", 959799117},
+		{"PM3", 808869709},
+		{"MN1", 959602509},
+		{"MN2", 808673101},
+		{"MN3", 825450317},
+		{"EL1", 842227533},
+		{"EL2", 859004749},
+		{"EL3", 875781965},
+		{"EL4", 892559181},
+		{"DM1", 859266893},
+		{"DM2", 876044109},
+		{"DM3", 892821325},
+		{"GM1", 926310221},
+		{"GM2", 943087437},
+		{"GM3", 959864653},
+		{"GM4", 808935245},
+		{"GM6", 825712461},
+		{"GM7", 842489677},
+		{"ULP1", 875913037},
+		{"ULP2", 892690253},
+		{"ULP3", 909467469},
+		{"ULP4", 926244685},
+		{"BC1", 909598541},
+		{"BC2", 926375757},
+		{"BC3", 943152973},
+		{"GG1", 943218509},
+		{"GG2", 959995725},
+		{"GG3", 809066317},
+		{"PX1", 892624717},
+		{"PX2", 875847501},
+		{"PX3", 1127231811},
+		{"PX4", 909401933},
+		{"DW1", 909336397},
+		{"DW2", 926113613},
+		{"JP1", 876109645},
+		{"JP2", 892886861},
+		{"JP3", 909664077},
+		{"JP4", 1127494211},
+		{"JP5", 926441293},
+		{"PB1", 842555213},
+		{"PB2", 959930189},
+		{"PB3", 825777997},
+		{"PB4", 859332429},
+		{"RB1", 825646925},
+		{"RB2", 842424141},
+		{"RB3", 859201357},
+		{"RB4", 875978573},
+		{"RB5", 892755789},
+		{"RB6", 909533005},
+		{"FIN1", 1229140294},
+		{"FIN4", 1179464006},
+		{"FIN6", 1128549957},
 	};
 
 	refreshRate = 60;
@@ -295,10 +390,13 @@ startup {
 			addSetting("FIN", "FIN6", "Credits", "Split after finishing credits", false);
 			
 	addSetting(null, "splitOnStart", "Split on Mission Start (Experimental)", "Delay splitting until starting any next story mission", false);
-	
-	addSetting(null, "iPigeons", "Pigeons", "Split upon extermination of any Flying Rat", false);
-	addSetting(null, "iStuntJumps", "Stunt Jumps", "Split upon completion of any Unique Stunt Jump", false);
-	addSetting(null, "iMostWanted", "Most Wanted", "Split upon neutralization of any Most Wanted target", false);
+
+	addSetting(null, "misc", "Miscellaneous", null, false);
+		addSetting("misc", "iPigeons", "Pigeons", "Split upon extermination of any Flying Rat", false);
+		addSetting("misc", "iStuntJumps", "Stunt Jumps", "Split upon completion of any Unique Stunt Jump", false);
+		addSetting("misc", "iMostWanted", "Most Wanted", "Split upon neutralization of any Most Wanted target", false);
+		addSetting("misc", "iRacesWon", "Races End", "Split upon winning any Brucie's race", false);
+		addSetting("misc", "iSweatshirt", "Sweatshirt", "Split upon collecting Sweatshirt on Happiness Island", false);
 
 	addSetting(null, "gameTime", "In-Game Time (Experimental)", "Game Timer shows IGT rather than Loadless time", false);
 	addSetting(null, "debug", "Debug", "Print debug messages to the Windows error console", false);
@@ -394,7 +492,7 @@ update {
 	if (!vars.enabled) return;
 
 	if (vars.isCE)
-	{		
+	{
 		if (vars.memoryWatchers["EpisodeID"].Current == 0) 
 		{
 			vars.correctEpisode = true;
@@ -425,8 +523,109 @@ update {
 	// check if missions attempted is set to 0.
 	bool missionCheck = vars.memoryWatchers["iMissionsAttempted"].Current == 0;
 
-	if (startCheck && timerCheck && missionCheck && vars.correctEpisode) {
+	// While loading the game from title screen
+	// allow the timer to start only upon starting new game
+	// and prevent start from firing while loading into a save.
+	// It is done by checking if user has any game saves in savefile directories.
+
+	bool noSaves = true; // by default always assume to start the timer
+	string dnn = null;
+	string stt = null;
+
+	// Scenario 1
+	// the savegames location path is dynamic - it varies between different users (different account ID) 
+	// so first check the path only up to \Profiles and then find the folder with ID and navigate to it
+	if (vars.version.ToString() == "1.2.0.59")
+	{
+		dnn = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Rockstar Games\GTA IV\Profiles"); // after \Profiles there's a folder named after account ID
+		// check if saves directory exist
+		if (Directory.Exists(dnn))
+		{
+			string IDName = null;  // to store the name of the folder containing the account ID
+			int folderCount = 0;
+			// check the amount of folders that exist in said path
+			foreach (var dir in Directory.EnumerateDirectories(dnn))
+			{
+				folderCount++;
+
+				if (folderCount == 1)
+				{
+					// extract the folder name containing the account ID
+					IDName = Path.GetFileName(dir);
+				
+					// now that account ID is known, combine it into a full path that contains game saves
+					string fulldnn = Path.Combine(dnn, IDName);
+					//vars.debugInfo(fulldnn); // print full path
+				
+					// check if any file starting with 'SGTA4' exist inside savegames directory
+					foreach (var file in Directory.EnumerateFiles(fulldnn, "SGTA4*"))
+					{
+						// if there are no files starting with SGTA4*
+						// that means upon launching from title screen user will start the new game
+						// so the timer MUST start
+						if (file == null)
+						{
+							noSaves = true;
+						}
+						// directory isn't empty AND game isn't starting from existing savefile
+						// that means user is loading the game into a save, AND is doing it from title screen, so do NOT let the timer start
+						else if (file != null && current.MenuDelay != 0)
+						{
+							noSaves = false;
+						}
+					}
+				}
+				// directory is empty or contains more than two folders
+				// so assume default behavior and allow timer to start
+				else if (folderCount == 0 || folderCount >= 2)
+				{
+					noSaves = true;
+				}
+			}
+		}
+		// directory doesn't exist, so assume the default behavior and allow the timer to start
+		else
+		{
+			noSaves = true;
+		}
+	}
+	// Scenario 2
+	// the savegames location path is static - is always the same for any user (while using xliveless)
+	if (vars.version.ToString() == "1.0.4.0")
+	{
+		stt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Rockstar Games\GTA IV\savegames");
+		// check if saves directory exist
+		if (Directory.Exists(stt))
+		{
+			// check if any file starting with 'SGTA4' exist inside savegames directory
+			foreach (var file in Directory.EnumerateFiles(stt, "SGTA4*"))
+			{
+				// if there are no files starting with SGTA4*
+				// that means upon launching from title screen user will start the new game
+				// so the timer MUST start
+				if (file == null)
+				{
+					noSaves = true;
+				}
+				// directory isn't empty AND game isn't starting from existing savefile
+				// that means user is loading the game into a save, AND is doing it from title screen, so do NOT let the timer start
+				else if (file != null && current.MenuDelay != 0)
+				{
+					noSaves = false;
+				}
+			}
+		}
+		// directory doesn't exist, so assume the default behavior and allow the timer to start
+		else
+		{
+			noSaves = true;
+		}
+	}
+
+	// Timer ResetStart
+	if (startCheck && timerCheck && missionCheck && vars.correctEpisode && noSaves) {
 		vars.doResetStart = true;
+		vars.debugInfo("ResetStart");
 		vars.splits.Clear();
 	}
 
@@ -439,8 +638,6 @@ update {
 		// Stores the current phase the timer is in, so we can use the old one on the next frame.
 		vars.prevPhase = timer.CurrentPhase;
 	}
-
-
 }
 
 split {
@@ -458,158 +655,89 @@ split {
 	// =====================================================================
 	// Split on Mission End
 	// =====================================================================
-	// If setting is enabled AND specified character mission progress raises to a certain threshold AND game is not loading THEN do split.
-	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
-	// =====================================================================
-	
-	var mp = vars.memoryWatchers["iMissionsPassed"];
-	
-	if (settings["ROM2"] && (current.Roman > 11f && old.Roman < 8f && current.isLoading != 0)) return true;
-	if (settings["ROM3"] && (current.Roman > 18f && old.Roman < 15f && current.isLoading != 0)) return true;
-	if (settings["ROM4"] && (current.Roman > 24f && old.Roman < 22f && current.isLoading != 0)) return true;
-	if (settings["ROM5"] && (current.Roman > 31f && old.Roman < 28f && current.isLoading != 0)) return true;
-	if (settings["ROM6"] && (current.Roman > 38f && old.Roman < 35f && current.isLoading != 0)) return true;
-	if (settings["ROM7"] && (current.Roman > 44f && old.Roman < 42f && current.isLoading != 0)) return true;
-	if (settings["ROM8"] && (current.Faustin > 13f && old.Faustin < 2f && current.isLoading != 0)) return true; // Crime and Punishment
-	if (settings["ROM9"] && (current.Roman > 51f && old.Roman < 48f && current.isLoading != 0)) return true;
-	if (settings["ROM10"] && (current.Roman > 58f && old.Roman < 55f && current.isLoading != 0)) return true;
-	if (settings["ROM11"] && (current.Roman > 64f && old.Roman < 62f && current.isLoading != 0)) return true;
-	if (settings["ROM12"] && (current.Roman > 71f && old.Roman < 68f && current.isLoading != 0)) return true;
-	if (settings["ROM13"] && (current.Roman > 78f && old.Roman < 75f && current.isLoading != 0)) return true;
-		
-	if (settings["FD"] && (current.Michelle > 4f && old.Michelle < 2f && current.isLoading != 0)) return true; // 60% after First Date
-	
-	if (settings["VL1"] && (current.Vlad > 23f && old.Vlad < 2f && current.isLoading != 0)) return true;
-	if (settings["VL2"] && (current.Vlad > 48f && old.Vlad < 27f && current.isLoading != 0)) return true;
-	if (settings["VL3"] && (current.Vlad > 73f && old.Vlad < 52f && current.isLoading != 0)) return true;
-	if (settings["VL4"] && (current.Vlad > 98f && old.Vlad < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["LJ1"] && (current.Jacob > 48f && old.Jacob < 2f && current.isLoading != 0)) return true;
-	if (settings["LJ2"] && (current.Jacob > 98f && old.Jacob < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["FA1"] && (current.Faustin > 26f && old.Faustin < 16f && current.isLoading != 0)) return true;
-	if (settings["FA2"] && (current.Faustin > 40f && old.Faustin < 30f && current.isLoading != 0)) return true;
-	if (settings["FA3"] && (current.Faustin > 55f && old.Faustin < 44f && current.isLoading != 0)) return true;
-	if (settings["FA4"] && (current.Faustin > 69f && old.Faustin < 59f && current.isLoading != 0)) return true;
-	
-	if (settings["DR1"] && (current.Faustin > 83f && old.Faustin < 73f && current.isLoading != 0)) return true;
-	if (settings["DR2"] && (current.Faustin > 98f && old.Faustin < 87f && current.isLoading != 0)) return true;
-		
-	if (settings["BK1"] && (current.Brucie > 23f && old.Brucie < 2f && current.isLoading != 0)) return true;
-	if (settings["BK2"] && (current.Brucie > 48f && old.Brucie < 27f && current.isLoading != 0)) return true;
-	//if (settings["BK3"] //out of the closet 1
-	if (settings["BK4"] && (current.Brucie > 73f && old.Brucie < 52f && current.isLoading != 0)) return true;
-	if (settings["BK5"] && (current.Brucie > 98f && old.Brucie < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["FM1"] && (current.Francis > 14f && old.Francis < 2f && current.isLoading != 0)) return true;
-	//if (settings["FM2"] //final interview 1
-	if (settings["FM3"] && (current.Francis > 31f && old.Francis < 18f && current.isLoading != 0)) return true;
-	if (settings["FM4"] && (current.Francis > 48f && old.Francis < 35f && current.isLoading != 0)) return true;
-	if (settings["FM5"] && (current.Francis > 64f  && old.Francis < 52f && current.isLoading != 0)) return true;
-	if (settings["FM6"] && (current.Francis > 81f && old.Francis < 68f && current.isLoading != 0)) return true;
-	if (settings["FM7"] && (current.Francis > 98f && old.Francis < 85f && current.isLoading != 0)) return true;
 
-	if (settings["PM1"] && (current.Packie > 31f && old.Packie < 2f && current.isLoading != 0)) return true;
-	if (settings["PM2"] && (current.Packie > 64f && old.Packie < 35f && current.isLoading != 0)) return true;
-	if (settings["PM3"] && (current.Packie > 98f && old.Packie < 68f && current.isLoading != 0)) return true;
-	
-	if (settings["MN1"] && (current.Manny > 31f && old.Manny < 2f && current.isLoading != 0)) return true;
-	if (settings["MN2"] && (current.Manny > 64f && old.Manny < 35f && current.isLoading != 0)) return true;
-	if (settings["MN3"] && (current.Manny > 98f && old.Manny < 68f && current.isLoading != 0)) return true;
-	
-	if (settings["EL1"] && (current.Elizabeta > 23f && old.Elizabeta < 2f && current.isLoading != 0)) return true;
-	if (settings["EL2"] && (current.Elizabeta > 48f && old.Elizabeta < 27f && current.isLoading != 0)) return true;
-	if (settings["EL3"] && (current.Elizabeta > 73f && old.Elizabeta < 52f && current.isLoading != 0)) return true;
-	if (settings["EL4"] && (current.Elizabeta > 98f && old.Elizabeta < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["DM1"] && (current.Derrick > 31f && old.Derrick < 2f && current.isLoading != 0)) return true;
-	if (settings["DM2"] && (current.Derrick > 64f && old.Derrick < 35f && current.isLoading != 0)) return true;
-	if (settings["DM3"] && (current.Derrick > 98f && old.Derrick < 68f && current.isLoading != 0)) return true;
+	foreach (var mse in vars.missEnd) {
+		var k = mse.Key;
+		var v = mse.Value;
+		var rt = timer.CurrentTime.RealTime.GetValueOrDefault().TotalSeconds;
 
-	if (settings["GM1"] && (current.Gerry > 18f && old.Gerry < 2f && current.isLoading != 0)) return true;
-	if (settings["GM2"] && (current.Gerry > 38f && old.Gerry < 22f && current.isLoading != 0)) return true;
-	//if (settings["GM3"] // ill take her 1
-	if (settings["GM4"] && (current.Gerry > 58f && old.Gerry < 42f && current.isLoading != 0)) return true;
-	//if (settings["GM5"] // ransom, not a mission
-	if (settings["GM6"] && (current.Gerry > 78f && old.Gerry < 62f && current.isLoading != 0)) return true;
-	if (settings["GM7"] && (current.Gerry > 98f && old.Gerry < 82f && current.isLoading != 0)) return true;
-	
-	if (settings["ULP1"] && (current.ULP > 23f && old.ULP < 2f && current.isLoading != 0)) return true;
-	if (settings["ULP2"] && (current.ULP > 48f && old.ULP < 27f && current.isLoading != 0)) return true;
-	if (settings["ULP3"] && (current.ULP > 73f && old.ULP < 52f && current.isLoading != 0)) return true;
-	if (settings["ULP4"] && (current.ULP > 98f && old.ULP < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["BC1"] && (current.Bernie > 31f && old.Bernie < 2f && current.isLoading != 0)) return true;
-	if (settings["BC2"] && (current.Bernie > 64f && old.Bernie < 35f && current.isLoading != 0)) return true;
-	if (settings["BC3"] && (current.Bernie > 98f && old.Bernie < 68f && current.isLoading != 0)) return true;
-	
-	if (settings["GG1"] && (current.Gravelli > 31f && old.Gravelli < 2f && current.isLoading != 0)) return true;
-	if (settings["GG2"] && (current.Gravelli > 64f && old.Gravelli < 35f && current.isLoading != 0)) return true;
-	if (settings["GG3"] && (current.Gravelli > 98f && old.Gravelli < 68f && current.isLoading != 0)) return true;
+		if (
+			// check if setting is enabled
+			settings.ContainsKey(k) && settings[k] 
+			
+			// AND hasn't been split for
+			&& !vars.splits.Contains(k)
+			
+			// AND last finished mission changes
+			&& current.LastMissionName == v && old.LastMissionName != v
+			
+			// AND timer is running for more than 1 second (to prevent split right after timer start)
+			&& rt >= 1.0
+			
+			// AND missions attempted value remains unchanged (to prevent split upon loading a savefile)
+			&& vars.memoryWatchers["iMissionsAttempted"].Current == vars.memoryWatchers["iMissionsAttempted"].Old
+			)
+		{
+			vars.splits.Add(k); // add split to hashset, as it has been split for
+			vars.debugInfo((k));
+			return true; // do split
+		}
+	}
 
-	if (settings["PX1"] && (current.Playboy > 31f && old.Playboy < 2f && current.isLoading != 0)) return true;
-	if (settings["PX2"] && (current.Playboy > 64f && old.Playboy < 35f && current.isLoading != 0)) return true;
-	//if (settings["PX3"] //holland play 1
-	if (settings["PX4"] && (current.Playboy > 98f && old.Playboy < 68f && current.isLoading != 0)) return true;
-	
-	if (settings["DW1"] && (current.Dwayne > 48f && old.Dwayne < 2f && current.isLoading != 0)) return true;
-	if (settings["DW2"] && (current.Dwayne > 98f && old.Dwayne < 52f && current.isLoading != 0)) return true;
-	
-	if (settings["JP1"] && (current.Pegorino > 23f && old.Pegorino < 2f && current.isLoading != 0)) return true;
-	if (settings["JP2"] && (current.Pegorino > 48f && old.Pegorino < 27f && current.isLoading != 0)) return true;
-	if (settings["JP3"] && (current.Pegorino > 73f && old.Pegorino < 52f && current.isLoading != 0)) return true;
-	//if (settings["JP4"] //pest control 1
-	if (settings["JP5"] && (current.Pegorino > 98f && old.Pegorino < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["PB1"] && (current.Bell > 23f && old.Bell < 2f && current.isLoading != 0)) return true;
-	if (settings["PB2"] && (current.Bell > 48f && old.Bell < 27f && current.isLoading != 0)) return true;
-	if (settings["PB3"] && (current.Bell > 73f && old.Bell < 52f && current.isLoading != 0)) return true;
-	if (settings["PB4"] && (current.Bell > 98f && old.Bell < 77f && current.isLoading != 0)) return true;
-	
-	if (settings["RB1"] && (current.Ray > 14f && old.Ray < 2f && current.isLoading != 0)) return true;
-	if (settings["RB2"] && (current.Ray > 31f && old.Ray < 18f && current.isLoading != 0)) return true;
-	if (settings["RB3"] && (current.Ray > 48f && old.Ray < 35f && current.isLoading != 0)) return true;
-	if (settings["RB4"] && (current.Ray > 64f && old.Ray < 52f && current.isLoading != 0)) return true;
-	if (settings["RB5"] && (current.Ray > 81f && old.Ray < 68f && current.isLoading != 0)) return true;
-	if (settings["RB6"] && (current.Ray > 98f && old.Ray < 85f && current.isLoading != 0)) return true;
-	
-	if (settings["FIN2"] && (current.Roman > 84f && old.Roman < 82f && current.isLoading != 0)) return true; // deal || revenge
-	if (settings["FIN6"] && (current.Roman > 98f && old.Roman < 95f && current.isLoading != 0)) return true; // split after credits
-	
 	// Exceptions
 	// =====================================
 
-	// Character mission progress percentage and mission passed values are changing earlier than LastMissionName value
-	if (settings["ROM1"] && (current.LastMissionName == 3235661 && old.LastMissionName != 3235661 && current.isLoading != 0)) return true;
+	// Deal or Revenge - both missions are associated with one setting
+	if (settings["FIN2"]
+		&& !vars.splits.Contains("FIN2")
+		&& ((current.LastMissionName == 825843533 && old.LastMissionName != 825843533 && vars.memoryWatchers["iMissionsAttempted"].Current == vars.memoryWatchers["iMissionsAttempted"].Old) 
+		|| (current.LastMissionName == 842620749 && old.LastMissionName != 842620749 && vars.memoryWatchers["iMissionsAttempted"].Current == vars.memoryWatchers["iMissionsAttempted"].Old)))
+	{
+		vars.splits.Add("FIN2");
+		vars.debugInfo("FIN2");
+		return true;
+	}
 
-	// Character mission progress percentage for these missions do not increase, so LastMissionName values are used
-	if (settings["BK3"] && (current.LastMissionName == 808738637 && old.LastMissionName != 808738637 && current.isLoading != 0)) return true;
-	if (settings["FM2"] && (current.LastMissionName == 942956365 && old.LastMissionName != 942956365 && current.isLoading != 0)) return true;
-	if (settings["GM3"] && (current.LastMissionName == 959864653 && old.LastMissionName != 959864653 && current.isLoading != 0)) return true;
-	if (settings["PX3"] && (current.LastMissionName == 1127231811 && old.LastMissionName != 1127231811 && current.isLoading != 0)) return true;
-	if (settings["JP4"] && (current.LastMissionName == 1127494211 && old.LastMissionName != 1127494211 && current.isLoading != 0)) return true;
-	if (settings["FIN1"] && (current.LastMissionName == 1229140294 && old.LastMissionName != 1229140294 && current.isLoading != 0)) return true; // one last thing
-	
-	//  Mr. & Mrs. Bellic - this mission doesn't have LastMissionName value and percentage doesn't increase
+	// Mr. & Mrs. Bellic - this mission doesn't have LastMissionName value and character percentage doesn't increase
 	// so check if either of FIN2 values are unchanged, but mission passed value increases
+	var mp = vars.memoryWatchers["iMissionsPassed"];
 	if (settings["FIN3"] 
+		&& !vars.splits.Contains("FIN3")
 		&& (((current.LastMissionName == 825843533 && old.LastMissionName == 825843533) && (mp.Current == mp.Old + 1)) 
 		|| ((current.LastMissionName == 842620749 && old.LastMissionName == 842620749) && (mp.Current == mp.Old + 1))))
+	{
+		vars.splits.Add("FIN3");
+		vars.debugInfo("FIN3");
 		return true;
-		
-	if (settings["FIN4"] && (current.LastMissionName == 1179464006 && old.LastMissionName != 1179464006 && current.isLoading != 0)) return true; // in mourning
-	
+	}
+
 	// Any% / Classic Final Split - first frame of last cutscene at the end of 'A Revenger's Tragedy' or 'Out of Commission'
-	// If setting is enabled AND In Mourning is finished AND cinematic cutscene starts playing AND game is not loading at the moment:
+	// If setting is enabled AND hasn't been split for AND In Mourning is finished AND cinematic cutscene starts playing
 	// That means player completed the game a.k.a. finished any% / classic speedrun
 	// It works, because after finishing In Mourning there's no other possible cutscene to play besides the final one
-	if (settings["FIN5"] && (current.LastMissionName == 1179464006 && current.isCutsceneRunning == 8 && old.isCutsceneRunning != 8 && current.isLoading != 0)) return true;
-
+	if (settings["FIN5"] && !vars.splits.Contains("FIN5") && (current.LastMissionName == 1179464006 && current.isCutsceneRunning == 8 && old.isCutsceneRunning != 8))
+	{
+		vars.splits.Add("FIN5");
+		vars.debugInfo("FIN5 - Any% Final Split");
+		return true;
+	}
 
 
 	// =======================================================================
 	// Miscellaneous stuff to split on
 	// =======================================================================
+
+	// happiness island sweatshirt
+	// check if player has picked something up at specified location
+	if (settings["iSweatshirt"] 
+		&& !vars.splits.Contains("iSweatshirt")
+		&& ((current.PickedUpFromGround == old.PickedUpFromGround + 1) 
+		&& ((current.Xcoord > -609.34f && current.Xcoord < -606.69f) && (current.Ycoord > -769.11f && current.Ycoord < -767.08f))))
+	{
+		vars.splits.Add("iSweatshirt");
+		vars.debugInfo("iSweatshirt");
+		return true;
+	}
 
 	// loop through memory watchers and if it matches an enabled setting then check if it's increased
 	foreach (var mw in vars.memoryWatchers) {
@@ -626,7 +754,7 @@ split {
 				// delay splitting for mission passed if splitOnStart is enabled
 				if (key == "iMissionsPassed" && settings["splitOnStart"]) {
 					vars.queueSplit = true;
-				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"]) {
+				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"] || settings["iRacesWon"]) {
 					return true;
 				}
 			}
@@ -659,16 +787,18 @@ isLoading {
 	// this needs to be true to enable gameTime
 	if (settings["gameTime"]) return true;
 
-	// stop the loadless timer when the game freezes while doing video editor warp
-	if (current.VideoEditor == 256) {
-		if (vars.enabled && vars.correctEpisode) {
-			if (vars.isCE) {
-				if ((current.LastMenuFade >= 800 || current.LastMenuFade == 0) && current.isGameplayVisible == 1 && current.isMenuOpen == 1) {
-					return true;
-				}
-			} else {
-				return true;
-			}
+	// Pre-Complete Edition only: pause the loadless timer when the game freezes while doing video editor warp
+	if (vars.enabled && vars.correctEpisode && !vars.isCE && current.VideoEditor == 256) return true;
+
+	// Pre-Complete Edition only: loadless timer must continue to run during certain loading screens in multiplayer-related scenarios.
+	if (vars.enabled && vars.correctEpisode && !vars.isCE) {
+		// Opening and closing player model menu. 1047 is a value for whole multiplayer cellphone submenu.
+		if (current.CellphoneSubmenus == 1047) {
+			return false;
+		}
+		// "Disconnected from game session" screen (entering LAN lobby)
+		if ((current.Xcoord > -2001f && current.Xcoord < -1998f) && (current.Ycoord > -2001f && current.Ycoord < -1998f)) {
+			return false;
 		}
 	}
 
