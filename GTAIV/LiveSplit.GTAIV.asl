@@ -13,7 +13,7 @@
 // VideoEditor (CE only): 0 in gameplay, 256 in video editor.
 // VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor.
 // CellphoneSubmenus (pre-CE only): Different values depending on which cellphone submenu is currently open (messages, organizer etc.) Shows 1000 if phone is not pulled out.
-// PickedUpFromGround: Starts from 0 and goes up +1 any time something is picked up from ground (money/weapons/healthpacks). Resets back to zero after vid warping or loading a save.
+// PickedUpFromGround: Starts from 0 and goes up +1 any time something is picked up from ground (money/weapons/healthpacks/armor etc.). Resets back to zero after vid warping or loading a save.
 // Xcoord, Ycoord, Zcoord are player coordinates. Zcoords are commented out as there's no use for them in autosplitting.
 // Character names are their respective mission progress percentage.
 
@@ -143,6 +143,7 @@ startup {
 		{"iStuntJumps", 0xC61464},
 		{"iMostWanted", 0xC615CC},
 		{"iRacesWon", 0xC6155C},
+		{"iHotDogs", 0xC614F8},
 	};
 
 	vars.missEnd = new Dictionary<string, int> {
@@ -397,6 +398,7 @@ startup {
 		addSetting("misc", "iMostWanted", "Most Wanted", "Split upon neutralization of any Most Wanted target", false);
 		addSetting("misc", "iRacesWon", "Races End", "Split upon winning any Brucie's race", false);
 		addSetting("misc", "iSweatshirt", "Sweatshirt", "Split upon collecting Sweatshirt on Happiness Island", false);
+		addSetting("misc", "iHotDogs", "Hotdogs", "Split upon consuming a Hotdog", false);
 
 	addSetting(null, "gameTime", "In-Game Time (Experimental)", "Game Timer shows IGT rather than Loadless time", false);
 	addSetting(null, "debug", "Debug", "Print debug messages to the Windows error console", false);
@@ -754,7 +756,7 @@ split {
 				// delay splitting for mission passed if splitOnStart is enabled
 				if (key == "iMissionsPassed" && settings["splitOnStart"]) {
 					vars.queueSplit = true;
-				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"] || settings["iRacesWon"]) {
+				} else if (settings["iPigeons"] || settings["iStuntJumps"] || settings["iMostWanted"] || settings["iRacesWon"] || settings["iHotDogs"]) {
 					return true;
 				}
 			}
