@@ -12,12 +12,8 @@
 // isCutsceneRunning: 0 if not running, 8 if running, 10 if skipped. The cinematic mo-cap cutscenes, not scripted ones with pre-made animations.
 // MissionsAttempted: amount of attempted story missions
 // ScreenFade: 0 if not fading, 15 if fading. Opening esc menu fade does _not_ fall under it.
-// onMission: is player on a mission flag. 0 if false, 1 if true
-// VideoEditor (CE only): 0 in gameplay, 256 in video editor,
-// VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor,
-// LastMenuFade (CE only): length in milliseconds of last menu screen fade that occured. In other words: in gameplay shows 800/1000 and in menus 0/1/5/400. Shows 0 from new game, until menu is opened for first time.
-// isMenuOpen (CE only): 0 in game, 1 in menus, 1 in video editor, 1 during vid warp freeze.
-// isGameplayVisible (CE only): 1 in game, 0/1 in menus, 0 in video editor, 1 during vid warp freeze.
+// VideoEditor (CE only): 0 in gameplay, 256 in video editor
+// VideoEditor (pre-CE only): 0 in gameplay, 1 on save menu, 256 during vid warp freeze, 257 in menus and video editor
 // Xcoord, Ycoord, Zcoord are player coordinates. Zcoords are commented out as there's no use for them in autosplitting.
 // Characters names are their respective mission progress percentage.
 
@@ -27,14 +23,10 @@ state("GTAIV", "1.2.0.59") {
 	uint episodeID : 0xD73240;
 	uint isFirstMission : 0xD8DFD0;
 	int LastMissionName : 0xEB6FAC;
-	int isCutsceneRunning : 0xE9475C;
+	// int isCutsceneRunning : 0xE9475C;
 	int MissionsAttempted : 0xEB79D0;
 	int ScreenFade : 0xC39294;
-	int onMission : 0x1266C80;
 	int VideoEditor : 0xD60C3C;
-	int LastMenuFade : 0xD61520;
-	int isMenuOpen : 0xD73590;
-	int isGameplayVisible : 0xC3E428;
 	float Xcoord : 0x124BA70;
 	float Ycoord : 0x124BA74;
 	//float Zcoord : 0x124BA78;
@@ -49,17 +41,13 @@ state("GTAIV", "1.2.0.59") {
 // Complete Edition until 9/02/2023
 state("GTAIV", "1.2.0.43") {
 	uint isLoading : 0xD747A4;
-	uint isFirstMission : 0xD8DFD0;
 	uint episodeID : 0xD73240;
+	uint isFirstMission : 0xD8DFD0;
 	int LastMissionName : 0xEB6FAC;
-	int isCutsceneRunning : 0xE9475C;
+	// int isCutsceneRunning : 0xE9475C;
 	int MissionsAttempted : 0xEB79D0;
 	int ScreenFade : 0xC39294;
-	int onMission : 0x1266C80;
 	int VideoEditor : 0xD60C3C;
-	int LastMenuFade : 0xD61520;
-	int isMenuOpen : 0xD73590;
-	int isGameplayVisible : 0xC3E428;
 	float Xcoord : 0x124BA70;
 	float Ycoord : 0x124BA74;
 	//float Zcoord : 0x124BA78;
@@ -77,20 +65,19 @@ state("EFLC", "1.1.2.0") {
 	uint episodeID : 0xC4D7C4; // could also use 0xC619D8
 	uint isFirstMission : 0xD0D8B8;
 	int LastMissionName : 0xDA4CFC;
-	int isCutsceneRunning : 0xD073F0;
+	// int isCutsceneRunning : 0xD073F0;
 	int MissionsAttempted : 0xDA58B8;
 	int ScreenFade : 0xB17A44;
-	int onMission : 0x11E80E8;
 	int VideoEditor : 0xD6E428;
 	float Xcoord : 0x12462F0;
 	float Ycoord : 0x12462F4;
 	//float Zcoord : 0x12462F8;
-	float Billy : 0x00DA54E4, 0xC, 0x0;
-	float Jim : 0x00DA54E8, 0xC, 0x0;
-	float Stubbs : 0x00DA54F4, 0xC, 0x0;
-	float Ashley : 0x00DA54F8, 0xC, 0x0;
-	float Elizabeta : 0x00DA54FC, 0xC, 0x0;
-	float Ray : 0x00DA5500, 0xC, 0x0;
+	float Billy : 0xDA54E4, 0xC, 0x0;
+	float Jim : 0xDA54E8, 0xC, 0x0;
+	float Stubbs : 0xDA54F4, 0xC, 0x0;
+	float Ashley : 0xDA54F8, 0xC, 0x0;
+	float Elizabeta : 0xDA54FC, 0xC, 0x0;
+	float Ray : 0xDA5500, 0xC, 0x0;
 }
 
 startup {
@@ -98,8 +85,6 @@ startup {
 		// newest first
 		{"1.2.0.59", 0x1122B0},
 		{"1.2.0.43", 0x1122B0},
-		{"1.2.0.32", 0x112240},
-		{"1.1.3.0", -0xC020},
 		{"1.1.2.0", 0x0},
 	};
 
@@ -111,6 +96,30 @@ startup {
 		{"fRacesWon", 0xDA5538},
 		{"fBikesStolen", 0xDA5540},
 		{"iRandomEncounters", 0xDA5934}, 
+	};
+	
+	vars.missEnd = new Dictionary<string, List<int>> {
+		{"B3", new List<int>{50, 4456498}},
+		{"B4", new List<int>{51, 4456499}},
+		{"B5", new List<int>{52, 4456500}},
+		{"B6", new List<int>{54, 4456502}},
+		{"J1", new List<int>{55, 4456503}},
+		{"J2", new List<int>{56, 4456504}},
+		{"J3", new List<int>{12337, 1409298481}},
+		{"J4", new List<int>{12593, 1409298737}},
+		{"J5", new List<int>{12849, 1409298993}},
+		{"E1", new List<int>{53, 4456501}},
+		{"E2", new List<int>{14641, 1409300785}},
+		{"E3", new List<int>{12338, 1409298482}},
+		{"E4", new List<int>{12594, 1409298738}},
+		{"S1", new List<int>{13105, 1409299249}},
+		{"S2", new List<int>{13361, 1409299505}},
+		{"S4", new List<int>{1414087749, 1414087749}},
+		{"A1", new List<int>{14129, 1409300273}},
+		{"A2", new List<int>{14385, 1409300529}},
+		{"R1", new List<int>{12850, 1409298994}},
+		{"R2", new List<int>{13106, 1409299250}},
+		{"R3", new List<int>{13362, 1409299506}},
 	};
 
 	refreshRate = 60;
@@ -186,12 +195,12 @@ startup {
 			addSetting("S00", "S33", "Get Lost", null, false);
 			
 		addSetting("splitOnStart", "A00", "Ashley Butler", null, false);
-			addSetting("A00", "A11", "Coming Down (Experimental)", "This is a phone activated mission", false);
+			addSetting("A00", "A11", "Coming Down", null, false);
 			addSetting("A00", "A22", "Roman's Holiday", null, false);
 			
 		addSetting("splitOnStart", "R00", "Ray Boccino", null, false);
 			addSetting("R00", "R11", "Diamonds In The Rough", null, false);
-			addSetting("R00", "R22", "Collector's Item (Experimental)", "This is a phone activated mission", false);
+			addSetting("R00", "R22", "Collector's Item", null, false);
 			addSetting("R00", "R33", "Was It Worth it?", null, false);
 			
 	addSetting(null, "misc", "Miscellaneous", null, false);
@@ -304,8 +313,10 @@ update {
 	// check if missions progress with Billy is set to 0.
 	bool missionCheck = current.Billy == 0f;
 
+	// Timer ResetStart
 	if (startCheck && timerCheck && missionCheck && vars.correctEpisode) {
 		vars.doResetStart = true;
+		vars.debugInfo("ResetStart");
 		vars.splits.Clear();
 	}
 
@@ -328,264 +339,362 @@ split {
 	// =====================================================================
 	// Split on Mission End
 	// =====================================================================
-	// If setting is enabled AND specified character mission progress raises to a certain threshold AND game is not loading THEN do split.
-	// Game loading check is here to prevent splitting after doing video editor warp or loading a savegame.
-	// =====================================================================
-	
-	if (settings["B2"] && (current.Billy > 14f && old.Billy < 2f && current.isLoading != 0)) return true;
-	if (settings["B3"] && (current.Billy > 31f && old.Billy < 18f && current.isLoading != 0)) return true;
-	if (settings["B4"] && (current.Billy > 48f && old.Billy < 35f && current.isLoading != 0)) return true;
-	if (settings["B5"] && (current.Billy > 64f && old.Billy < 52f && current.isLoading != 0)) return true;
-	if (settings["B6"] && (current.Billy > 98f && old.Billy < 85f && current.isLoading != 0)) return true;
-	
-	if (settings["J1"] && (current.Jim > 18f && old.Jim < 2f && current.isLoading != 0)) return true;
-	if (settings["J2"] && (current.Jim > 38f && old.Jim < 22f && current.isLoading != 0)) return true;
-	if (settings["J3"] && (current.Jim > 58f && old.Jim < 42f && current.isLoading != 0)) return true;
-	if (settings["J4"] && (current.Jim > 78f && old.Jim < 62f && current.isLoading != 0)) return true;
-	if (settings["J5"] && (current.Jim > 98f && old.Jim < 82f && current.isLoading != 0)) return true;
-	
-	if (settings["E1"] && (current.Billy > 81f && old.Billy < 68f && current.isLoading != 0)) return true; // Buyer's Market
-	if (settings["E2"] && (current.Elizabeta > 31f && old.Elizabeta < 2f && current.isLoading != 0)) return true;
-	if (settings["E3"] && (current.Elizabeta > 64f && old.Elizabeta < 35f && current.isLoading != 0)) return true;
-	if (settings["E4"] && (current.Elizabeta > 98f && old.Elizabeta < 68f && current.isLoading != 0)) return true;
-	
-	if (settings["S1"] && (current.Stubbs > 31f && old.Stubbs < 2f && current.isLoading != 0)) return true;
-	if (settings["S2"] && (current.Stubbs > 64f && old.Stubbs < 35f && current.isLoading != 0)) return true;
-	if (settings["S4"] && (current.Stubbs > 98f && old.Stubbs < 68f && current.isLoading != 0)) return true; // split after credits
-	
-	if (settings["A1"] && (current.Ashley > 48f && old.Ashley < 2f && current.isLoading != 0)) return true;
-	if (settings["A2"] && (current.Ashley > 98f && old.Ashley < 52f && current.isLoading != 0)) return true;
-	
-	if (settings["R1"] && (current.Ray > 31f && old.Ray < 2f && current.isLoading != 0)) return true;
-	if (settings["R2"] && (current.Ray > 64f && old.Ray < 35f && current.isLoading != 0)) return true;
-	if (settings["R3"] && (current.Ray > 98f && old.Ray < 68f && current.isLoading != 0)) return true;
-		
+
+	foreach (var mse in vars.missEnd) {
+		var k = mse.Key;
+		var v = mse.Value;
+
+		if (
+			// check if setting is enabled 
+			settings.ContainsKey(k) && settings[k] 
+
+			// AND hasn't been split for
+			&& !vars.splits.Contains(k)
+
+			// AND last finished mission changes
+			&& v.Contains(current.LastMissionName) && !v.Contains(old.LastMissionName)
+
+			// AND missions attempted value remains unchanged (to prevent split upon loading a savefile)
+			&& current.MissionsAttempted == old.MissionsAttempted
+			)
+			{
+			vars.splits.Add(k); // add split to hashset, as it has been split for
+			vars.debugInfo((k));
+			return true; // do split
+		}
+	}
+
 	// Exceptions
 	// ====================================
-		
+
 	// Pretty Boy split
 	// If setting is enabled
+	//		AND hasn't been split for
 	// 		AND current mission progress with Billy is at 0% (no missions are completed - player is doing "Clean and Serene")
 	// 		AND if screen starts fading to black
 	//		AND player is in the area of "Clean and Serene" chop shop destination marker:
 	// That means the marker has been entered and split needs to happen
 	// exact marker coordinates from billy1.sco {914.23260000, 1556.08400000, 18.26000000}
 	if (settings["B1"] 
+		&& !vars.splits.Contains("B1")
 		&& (current.Billy == 0f)
 		&& (current.ScreenFade == 15 && old.ScreenFade != 15) 
 		&& ((current.Xcoord < 918.23f && current.Xcoord > 910.23f) && (current.Ycoord < 1560.08f && current.Ycoord > 1552.08f)))
+	{ 
+		vars.splits.Add("B1");
+		vars.debugInfo("B1");
 		return true;
-		
+	}
+
+	// Clean And Serene split
+	// If setting is enabled
+	//		AND the mission hasn't been split for 
+	// 		AND your progress with Billy raises from 0% (that means one mission for Billy has been finished which would be 'Clean And Serene')
+	//		AND MissionsAttempted value remains unchanged (to prevent a split while loading a savefile)
+	// That means mission has been finished and split needs to happen
+	// LastMissionName method cannot apply here, because when you start a new game from savefile
+	// the LastMissionName value carries over from savefile new game was started from.
+	// So if the new game is started from savefile that has 'Clean And Serene' finished, split fails to happen.
+	if (settings["B2"] && !vars.splits.Contains("B2") && (current.Billy > 14f && old.Billy == 0f) && (current.MissionsAttempted == old.MissionsAttempted))
+	{
+		vars.splits.Add("B2");
+		vars.debugInfo("B2");
+		return true;
+	}
+
 	// Any% / Classic Final Split - hitting last marker at the end of 'Get Lost'
 	// If setting is enabled
+	// 		AND hasn't been split for
 	//		AND 'Was It Worth it?' is last finished mission (as its the only possible story mission to complete before starting 'Get Lost')
 	//		AND player is in the area of last marker at the end of 'Get Lost' 
 	//		AND screen starts fading to black 
-	//		AND there's no cutscene running at the moment (this check is here to prevent splitting during last cutscene playing):
 	// That means marker has been entered and split needs to happen as the player completed the game a.k.a. finished any% / classic speedrun.
 	// exact marker coordinates from stubbs4.sco {-1720.96800000, 368.84040000, 24.32380000}
 	if (settings["S3"] 
+		&& !vars.splits.Contains("S3")
 		&& ((current.LastMissionName == 13362 || current.LastMissionName == 1409299506) 
 		&& ((current.Xcoord < -1716.96f && current.Xcoord > -1724.96f) && (current.Ycoord > 364.84f && current.Ycoord < 374.84f)) 
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.isCutsceneRunning == 0)))
+		&& (current.ScreenFade == 15 && old.ScreenFade != 15))) 
+	{
+		vars.splits.Add("S3");
+		vars.debugInfo("S3 - Any% Final Split");
 		return true;
-		
-	
-	
+	}
+
 	// ==================================================================
 	// Split on Mission Start
 	// ==================================================================
 	// If setting is enabled 
+	// 		AND hasn't been split for
 	//		AND specified character mission progress is at certain threshold
 	// 		AND player is in area of static mission start marker associated with this setting
-	// 		AND screen starts fading to black
-	//		AND player is not on a mission, yet (this check is here to prevent splitting when second fade-out happen, after cutscene ends):
+	// 		AND missions attempted value raises:
 	// That means mission marker has been entered, mission has been started, and split needs to happen.
-	// onMission flag changes to 1 around when screen fades fully to black.
 	// Any coordinates below are mission start markers locations taken from main.sco
 	// ===================================================================
-	
+
 	// for all Billy's missions: {-1718.45900000, 361.44560000, 24.39980000}
-	if (settings["B33"] 
+	if (settings["B33"]
+		&& !vars.splits.Contains("B33")
 		&& ((current.Billy > 14f && current.Billy < 18f)
-		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1728.45f && current.Xcoord < -1708.45f) && (current.Ycoord > 351.44f && current.Ycoord < 371.44f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1))) 
+	{
+		vars.splits.Add("B33");
+		vars.debugInfo("B33");
 		return true;
+	}
 	if (settings["B44"]
+		&& !vars.splits.Contains("B44")
 		&& ((current.Billy > 31f && current.Billy < 35f)
-		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1728.45f && current.Xcoord < -1708.45f) && (current.Ycoord > 351.44f && current.Ycoord < 371.44f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1))) 
+	{
+		vars.splits.Add("B44");
+		vars.debugInfo("B44");
 		return true;
+	}
 	if (settings["B55"]
+		&& !vars.splits.Contains("B55")
 		&& ((current.Billy == 50f)
-		&& ((current.Xcoord > -1722.45 && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
-		return true;// Action/Reaction
+		&& ((current.Xcoord > -1728.45f && current.Xcoord < -1708.45f) && (current.Ycoord > 351.44f && current.Ycoord < 371.44f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("B55");
+		vars.debugInfo("B55");
+		return true; // Action/Reaction
+	}
 	// 66.67% now Buyer's Market should've happen, but this mission is moved to Elizabeta
 	if (settings["B66"]
+		&& !vars.splits.Contains("B66")
 		&& ((current.Billy > 81f && current.Billy < 85f)
-		&& ((current.Xcoord > -1722.45f && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1728.45f && current.Xcoord < -1708.45f) && (current.Ycoord > 351.44f && current.Ycoord < 371.44f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("B66");
+		vars.debugInfo("B66");
 		return true; // This Shit's Cursed
-		
+	}
 	// {-1837.80200000, 281.17250000, 21.95570000}
 	if (settings["J11"]
+		&& !vars.splits.Contains("J11")
 		&& ((current.Jim == 0f)
-		&& ((current.Xcoord > -1841.8f && current.Xcoord < -1834.8f) && (current.Ycoord > 277.17f && current.Ycoord < 287.17f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1847.8f && current.Xcoord < -1824.8f) && (current.Ycoord > 271.17f && current.Ycoord < 291.17f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("J11");
+		vars.debugInfo("J11");
 		return true;
-		
+	}
+
 	// {-1632.97400000, 794.95300000, 28.76430000}
 	if (settings["J22"]
+		&& !vars.splits.Contains("J22")
 		&& ((current.Jim == 20f)
-		&& ((current.Xcoord > -1636.97f && current.Xcoord < -1628.97f) && (current.Ycoord > 790.95f && current.Ycoord < 798.95f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1642.97f && current.Xcoord < -1622.97f) && (current.Ycoord > 784.95f && current.Ycoord < 804.95f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("J22");
+		vars.debugInfo("J22");
 		return true;
-		
+	}
+
 	// {-338.90340000, 1601.72000000, 19.42150000}
 	if (settings["J33"]
+		&& !vars.splits.Contains("J33")
 		&& ((current.Jim == 40f)
-		&& ((current.Xcoord > -342.9f && current.Xcoord < -334.9f) && (current.Ycoord > 1557.72f && current.Ycoord < 1605.72f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -348.9f && current.Xcoord < -328.9f) && (current.Ycoord > 1591.72f && current.Ycoord < 1611.72f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("J33");
+		vars.debugInfo("J33");
 		return true;
-		
+	}
+
 	// {-1460.73000000, 817.10820000, 18.56550000}
 	if (settings["J44"]
+		&& !vars.splits.Contains("J44")
 		&& ((current.Jim > 58f && current.Jim < 62f)
-		&& ((current.Xcoord > -1464.73f && current.Xcoord < -1456.73f) && (current.Ycoord > 813.1f && current.Ycoord < 821.10f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1470.73f && current.Xcoord < -1450.73f) && (current.Ycoord > 807.1f && current.Ycoord < 827.10f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("J44");
+		vars.debugInfo("J44");
 		return true;
-		
+	}
+
 	// {-1110.09500000, 1317.83100000, 23.43190000} 
 	if (settings["J55"]
+		&& !vars.splits.Contains("J55")
 		&& ((current.Jim == 80f)
-		&& ((current.Xcoord > -1114.09f && current.Xcoord < -1106.09f) && (current.Ycoord > 1313.83f && current.Ycoord < 1321.83f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1129.09f && current.Xcoord < -1100.09f) && (current.Ycoord > 1307.83f && current.Ycoord < 13.83f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("J55");
+		vars.debugInfo("J55");
 		return true;
-	
-    // for all Elizabeta's missions: {362.82160000, 1504.80200000, 15.97050000}
+	}
+
+	// for all Elizabeta's missions: {362.82160000, 1504.80200000, 15.97050000}
 	if (settings["E11"]
+		&& !vars.splits.Contains("E11")
 		&& ((current.Billy > 64f && current.Billy < 68f)
-		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord < 372.82f && current.Xcoord > 352.82f) && (current.Ycoord < 1514.8f && current.Ycoord > 1496.8f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("E11");
+		vars.debugInfo("E11");
 		return true; // Buyer's Market
+	}
 	if (settings["E22"]
-		&& ((current.Elizabeta == 0f)
-		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& !vars.splits.Contains("E22")
+		&& ((current.Elizabeta == 0f && current.Jim > 58f) // hit the pipe must be completed
+		&& ((current.Xcoord < 372.82f && current.Xcoord > 352.82f) && (current.Ycoord < 1514.8f && current.Ycoord > 1496.8f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("E22");
+		vars.debugInfo("E22");
 		return true; // Heavy Toll
+	}
 	if (settings["E33"]
+		&& !vars.splits.Contains("E33")
 		&& ((current.Elizabeta > 31f && current.Elizabeta < 35f)
-		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord < 372.82f && current.Xcoord > 352.82f) && (current.Ycoord < 1514.8f && current.Ycoord > 1496.8f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("E33");
+		vars.debugInfo("E33");
 		return true;
+	}
 	if (settings["E44"]
+		&& !vars.splits.Contains("E44")
 		&& ((current.Elizabeta > 64f && current.Elizabeta < 68f)
-		&& ((current.Xcoord < 366.82f && current.Xcoord > 358.82f) && (current.Ycoord < 1508.8f && current.Ycoord > 1500.8f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord < 372.82f && current.Xcoord > 352.82f) && (current.Ycoord < 1514.8f && current.Ycoord > 1496.8f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("E44");
+		vars.debugInfo("E44");
 		return true;
-	
+	}
+
 	// {-35.08080000, 764.47520000, 13.71320000}
 	if (settings["S11"]
-		&& ((current.Stubbs == 0f)
-		&& ((current.Xcoord > -39.08f && current.Xcoord < -31.08f) && (current.Ycoord > 760.47f && current.Ycoord < 768.47f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& !vars.splits.Contains("S11")
+		&& ((current.Stubbs == 0f && current.Billy < 85f) // buyer's market must be completed
+		&& ((current.Xcoord > -45.08f && current.Xcoord < -25.08f) && (current.Ycoord > 754.47f && current.Ycoord < 774.47f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("S11");
+		vars.debugInfo("S11");
 		return true;
+	}
 	// {-35.08080000, 764.47520000, 13.71320000}
 	if (settings["S22"]
+		&& !vars.splits.Contains("S22")
 		&& ((current.Stubbs > 31f && current.Stubbs < 35f)
-		&& ((current.Xcoord > -39.08f && current.Xcoord < -31.08f) && (current.Ycoord > 760.47f && current.Ycoord < 768.47f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -45.08f && current.Xcoord < -25.08f) && (current.Ycoord > 754.47f && current.Ycoord < 774.47f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("S22");
+		vars.debugInfo("S22");
 		return true;
+	}	
+
 	// {-1718.45900000, 361.44560000, 24.39980000}
 	if (settings["S33"]
+		&& !vars.splits.Contains("S33")
 		&& ((current.Stubbs > 64f && current.Stubbs < 68f)
-		&& ((current.Xcoord > -1722.45 && current.Xcoord < -1714.45f) && (current.Ycoord > 357.44f && current.Ycoord < 365.44f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1728.45f && current.Xcoord < -1708.45f) && (current.Ycoord > 351.44f && current.Ycoord < 371.44f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("S33");
+		vars.debugInfo("S33");
 		return true;
-		
+	}
+	
 	// {-1469.90200000, 490.41190000, 18.56540000}
 	if (settings["A22"]
+		&& !vars.splits.Contains("A22")
 		&& ((current.Ashley == 50f)
-		&& ((current.Xcoord > -1473.9f && current.Xcoord < -1465.9f) && (current.Ycoord > 486.41f && current.Ycoord < 494.41f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -1479.9f && current.Xcoord < -1459.9f) && (current.Ycoord > 480.41f && current.Ycoord < 500.41f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("A22");
+		vars.debugInfo("A22");
 		return true;
-		
+	}
+
 	// {-123.63790000, -256.57810000, 11.68540000}
 	if (settings["R11"]
-		&& ((current.Ray == 0f)
-		&& ((current.Xcoord > -127.63f && current.Xcoord < -119.63f) && (current.Ycoord > -260.57f && current.Ycoord < -252.57f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& !vars.splits.Contains("R11")
+		&& ((current.Ray == 0f && current.Jim == 100f && current.Elizabeta == 100f) // bad standing & shifting weight must be completed
+		&& ((current.Xcoord > -133.63f && current.Xcoord < -113.63f) && (current.Ycoord > -266.57f && current.Ycoord < -246.57f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("R11");
+		vars.debugInfo("R11");
 		return true;
+	}
 	// {-123.63790000, -256.57810000, 11.68540000}
 	if (settings["R33"]
+		&& !vars.splits.Contains("R33")
 		&& ((current.Ray > 64f && current.Ray < 68f)
-		&& ((current.Xcoord > -127.63f && current.Xcoord < -119.63f) && (current.Ycoord > -260.57f && current.Ycoord < -252.57f))
-		&& (current.ScreenFade == 15 && old.ScreenFade != 15)
-		&& (current.onMission == 0)))
+		&& ((current.Xcoord > -133.63f && current.Xcoord < -113.63f) && (current.Ycoord > -266.57f && current.Ycoord < -246.57f))
+		&& (current.MissionsAttempted == old.MissionsAttempted + 1)))
+	{
+		vars.splits.Add("R33");
+		vars.debugInfo("R33");
 		return true;
-	
+	}
+
 	// Exceptions
 	// ===============================
 	// These are phonecall-activated missions which do not start from static markers like others
-		
+
 	// Coming Down start split
 	// This mission is unlocked after finishing Politics
 	// If setting is enabled
+	// 		AND hasn't been split for
 	// 		AND mission progress with Ashley is at less than 49% (which is at 0%, while starting Coming Down)...
 	//		...alongside progress with Stubbs being at more than 31%... 
 	//		...which means at least one mission with him has been finished and that would be Politics (33.34% after finishing it)
-	//		AND onMission flag changes to 1 
+	//		AND game isn't loading (to assure there's no conflict between missions starting from static marker) 
 	// 		AND current missions attempted value changes (this check assures that story mission has been started, not stuff like bike thefts etc.)
-	// 		AND game is not loading (this check prevents splitting when replaying a mission after failing):
 	// That means some kind of mission has been started somewhere...
 	// ...and under such restricted circumstances only possible story mission to start would be Coming Down.
 	if (settings["A11"]
+		&& !vars.splits.Contains("A11")
 		&& ((current.Ashley < 49f && current.Stubbs > 31f)
-		&& (current.onMission == 1 && old.onMission == 0)
-		&& (current.MissionsAttempted != old.MissionsAttempted)
-		&& (current.isLoading != 0)))
+		&& (current.isLoading != 0)
+		&& (current.MissionsAttempted != old.MissionsAttempted))) 
+	{ 
+		vars.splits.Add("A11");
+		vars.debugInfo("A11");
 		return true;
-		
+	}
+
 	// Collector's Item start split
 	// This mission is unlocked after finishing Diamonds In The Rough AND Roman's Holiday
 	// If setting is enabled
 	// 		AND mission progress with Ray is at 33.34%...
 	//		...that means one mission for him has been finished and that would be Diamonds in the Rough...
 	// 		...alongside progress with Ashley being 100% (all her mission finished, which includes Roman's Holiday)
-	// 		AND onMission flag changes to 1
+	//		AND game isn't loading (to assure there's no conflict between missions starting from static marker) 
 	// 		AND current missions attempted value changes (this check assures that story mission has been started, not stuff like bike thefts etc.)
-	// 		AND game is not loading (this check prevents splitting when replaying a mission after failing):
 	// That means some kind of mission has been started somewhere...
 	// ...and under such restricted circumstances only possible story mission to start would be Collector's Item.
 	if (settings["R22"]
+		&& !vars.splits.Contains("R22")
 		&& (((current.Ray > 31f && current.Ray < 35f) && current.Ashley == 100f)
-		&& (current.onMission == 1 && old.onMission == 0)
-		&& (current.MissionsAttempted != old.MissionsAttempted)
-		&& (current.isLoading != 0)))
+		&& (current.isLoading != 0)
+		&& (current.MissionsAttempted != old.MissionsAttempted)))
+	{ 
+		vars.splits.Add("R22");
+		vars.debugInfo("R22");
 		return true;
-		
-		
-		
+	}
+
+
 	// =======================================================================
 	// Miscellaneous stuff to split on
 	// =======================================================================
@@ -623,7 +732,7 @@ start {
 
 	if (!vars.correctEpisode) return false;
 
-	return vars.doResetStart;	
+	return vars.doResetStart;
 }
 
 isLoading {
@@ -634,18 +743,8 @@ isLoading {
 	// this needs to be true to enable gameTime
 	if (settings["gameTime"]) return true;
 
-	// stop the loadless timer when the game freezes while doing video editor warp
-	if (current.VideoEditor == 256) {
-		if (vars.enabled && vars.correctEpisode) {
-			if (vars.isCE) {
-				if ((current.LastMenuFade >= 800 || current.LastMenuFade == 0) && current.isGameplayVisible == 1 && current.isMenuOpen == 1) {
-					return true;
-				}
-			} else {
-				return true;
-			}
-		}
-	}
+	// Pre-Complete Edition only: pause the loadless timer when the game freezes while doing video editor warp
+	if (vars.enabled && vars.correctEpisode && !vars.isCE && current.VideoEditor == 256) return true;
 
 	return current.isLoading == 0;
 }
